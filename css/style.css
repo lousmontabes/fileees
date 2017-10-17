@@ -1,0 +1,232 @@
+@font-face {
+    font-family: 'League Spartan';
+    src: url('../fonts/LeagueSpartan-Bold.otf');
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.area {
+    margin-left: 5vw;
+    margin-right: 2vw;
+}
+
+.titlewrap{
+    margin-top: 50px;
+    margin-bottom: 22px;
+}
+
+.titlewrap.big {
+    margin-top: 50px;
+}
+
+.titlewrap.small {
+    margin-top: 25px;
+}
+
+.title {
+    transition: 0.3s;
+    display: inline-block;
+    margin-left: 10px;
+    border-bottom: 1px solid transparent;
+    margin-bottom: 3px;
+}
+
+.title:focus {
+    outline: none;
+    border-bottom: 4px solid rgb(110, 110, 110);
+    margin-bottom: 0;
+}
+
+.title.big {
+    font-family: "League Spartan";
+    font-weight: 500;
+    font-size: 42px;
+    padding: 15px 0;
+}
+
+.title.small {
+    font-family: "Open Sans";
+    font-weight: 100;
+    font-size: 32px;
+}
+
+.grid {
+    transition: 0.3s;
+    border-radius: 4px;
+}
+
+.item {
+    position: relative;
+    transition: 0.1s;
+    width: 16%;
+    min-width: 160px;
+    font-family: Europa, sans-serif;
+    display: inline-block;
+    padding: 10px;
+}
+
+.item .view {
+    position: relative;
+    width: 100%;
+    padding-top: 60%;
+    border-radius: 4px;
+}
+
+.jpg {
+    background: #11998e;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.jpg .extension {
+    color: #23c086;
+}
+
+.pdf {
+    background: #a73737;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #7a2828, #a73737);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #7a2828, #a73737); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.pdf .extension {
+    color: #a73737;
+}
+
+.item .preview {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    padding-top: 60%;
+    transition: 0.25s;
+    background: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+}
+
+#fileicon {
+    width: 2vw;
+    min-width: 21px;
+}
+
+.item .previewContent {
+    position: absolute;
+    top: 0;
+    padding: 1.5em;
+    font-weight: 200;
+}
+
+.item .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    padding-top: 60%;
+    transition: 0.25s;
+    background: rgba(255, 255, 255, 0.8);
+    opacity: 0;
+}
+
+.item .overlayContent {
+    position: absolute;
+    top: 0;
+    padding: 1.5em;
+    font-weight: 200;
+}
+
+.item .name {
+    padding: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.item.updated .name::after {
+    position:absolute;
+    padding: 1px 3px;
+    border-radius: 15px;
+    color: #11998e;
+    background: #11998e;
+    font-size: 8px;
+    content: "+";
+    margin:4px 6px;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+.item:hover .name {
+    /*overflow: visible;
+    white-space: normal;*/
+}
+
+.item:hover .preview {
+    opacity: 0;
+}
+
+.item:hover .overlay {
+    opacity: 1;
+}
+
+.item:active {
+    transform: scale(0.97);
+}
+
+.item .extension {
+    display: block;
+    font-size: 20px;
+}
+
+.centerwrap {
+    height: 100%;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.emptystate {
+    margin-left: -5vw;
+    height: 60vh;
+    font-family: "open sans";
+    color: darkgray;
+    font-size: 22px;
+    font-weight: 100;
+}
+
+.dz-preview {
+    display: none;
+}
+
+#dummyItem {
+    display: none;
+}
+
+#dummyItem .item .view {
+    background: transparent;
+    border: 3px solid green;
+}
+
+.filesize {
+    font-weight: 400;
+}
+
+.dragging {
+    opacity: 1;
+    background: rgb(250, 250, 250);
+}
+
+.greyed {
+    color: rgb(110, 110, 110);
+    opacity: 0.75;
+}
