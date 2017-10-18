@@ -80,7 +80,8 @@ if (empty($files)) {
 
                             <?php
 
-                            $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], DateTimeZone::EUROPE);
+                            $timezone = new DateTimeZone('EUROPE');
+                            $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
 
                             if (strtotime($file['date']) > strtotime('-1 day')) {
                                 echo "Today, " . $date->format("H:i");
