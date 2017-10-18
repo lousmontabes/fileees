@@ -80,7 +80,7 @@ if (empty($files)) {
 
                             <?php
 
-                            $timezone = new DateTimeZone('EUROPE');
+                            $timezone = new DateTimeZone('Europe/Amsterdam');
                             $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
 
                             if (strtotime($file['date']) > strtotime('-1 day')) {
