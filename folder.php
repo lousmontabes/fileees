@@ -88,7 +88,7 @@ if (!isset ($_GET['folder'])) {
     var dummyItem = $("#dummyItem");
 
     var dropzone = new Dropzone("div#mainGrid", {
-        url: "backend/upload.php",
+        url: "backend/s3upload.php",
         init: function() {
             this.on("sending", function(file, xhr, formData){
                 formData.append("folderId", "<?php echo $folderId ?>");

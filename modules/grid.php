@@ -48,10 +48,11 @@ if (empty($files)) {
 
     foreach ($files as $file) {
 
+        $link = "https://s3.eu-west-2.amazonaws.com/files-app/".$file['hash'].".".$file['extension'];
+
         ?>
 
-        <a href="uploaded/<?php echo $file['hash'] ?>.<?php echo $file['extension'] ?>"
-           download="<?php echo $file['name'] ?>" title="<?php echo $file['name'] ?>">
+        <a href="<?php echo $link ?>" download="<?php echo $file['name'] ?>" title="<?php echo $file['name'] ?>">
 
             <div class="item" id="item<?php echo $i ?>">
                 <div class="view jpg">
