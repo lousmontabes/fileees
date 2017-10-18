@@ -72,7 +72,7 @@ if (empty($files)) {
                             if ($file['size'] > 1000000) {
                                 echo round($file['size'] / 1000000, 2) . " MB";
                             } else {
-                                echo round($file['size'] / 1000, 2) . "KB";
+                                echo round($file['size'] / 1000, 2) . " KB";
                             }
 
                             ?>
@@ -80,16 +80,19 @@ if (empty($files)) {
 
                             <?php
 
-                            $timezone = new DateTimeZone('Europe/Amsterdam');
-                            $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
+                            // TODO: Fix this timezone mess.
 
-                            if (strtotime($file['date']) > strtotime('-1 day')) {
+                            $timezone = new DateTimeZone('Europe/London');
+                            $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
+                            $date->add(DateInterval::createFromDateString("+2 hours"));
+
+                            if ($date->getTimestamp() > strtotime('-1 day')) {
                                 echo "Today, " . $date->format("H:i");
                             }
-                            else if (strtotime($file['date']) > strtotime('-2 day')) {
+                            else if ($date->getTimestamp() > strtotime('-2 day')) {
                                 echo "Yesterday, " . $date->format("H:i");
                             }
-                            else if (strtotime($file['date']) > strtotime('-7 day')) {
+                            else if ($date->getTimestamp() > strtotime('-7 day')) {
                                 echo $date->format("l, H:i");
                             } else {
                                 echo $date->format('l d M, Y H:i');
