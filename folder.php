@@ -101,11 +101,13 @@ if (!isset ($_GET['folder'])) {
         addDummyItem();
     });
     
-    dropzone.on("success", function() {
+    dropzone.on("success", function(file, response) {
+
         $.post("modules/grid.php", {folder: <?php echo $folderId ?>} ).done(function(response) {
             mainGridDiv.removeClass("dragging");
             updateMainGrid(response);
         });
+        
     });
 
     dropzone.on("dragover", function() {
@@ -167,6 +169,10 @@ if (!isset ($_GET['folder'])) {
         url: "backend/simple_upload.php"
 
     });*/
+
+    function getFile(id) {
+        $("#downloadform" + id).submit();
+    }
 
 </script>
 

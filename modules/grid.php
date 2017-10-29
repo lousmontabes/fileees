@@ -17,7 +17,7 @@ if (!isset($files)) {
 
         $files = [];
 
-        $result = mysqli_query($con, "SELECT * FROM files WHERE folder = '$folderId'");
+        $result = mysqli_query($con, "SELECT `id`, `name`, `type`, `format`, `extension`, `size`, `uploader`, `date`, `folder`, `hash` FROM files WHERE folder = '$folderId'");
         while ($row = mysqli_fetch_array($result)) {
             array_push($files, $row);
         }
@@ -47,66 +47,64 @@ if (empty($files)) {
 } else {
 
     foreach ($files as $file) {
-
-        $link = "https://s3.eu-west-2.amazonaws.com/files-app/".$file['hash'].".".$file['extension'];
-
         ?>
 
-        <a href="<?php echo $link ?>" download="<?php echo $file['name'] ?>" title="<?php echo $file['name'] ?>">
+        <form id="downloadform<?php echo $file['id'] ?>" action="./retrieve_file.php" method="post" style="display: none">
+            <input type="hidden" name="id" value="<?php echo $file['id'] ?>">
+            <input type="hidden" name="hash" value="<?php echo $file['hash'] ?>">
+        </form>
 
-            <div class="item" id="item<?php echo $i ?>">
-                <div class="view jpg">
+        <div class="item" id="item<?php echo $i ?>" onclick="getFile(<?php echo $file['id'] ?>)">
+            <div class="view jpg">
 
-                    <div class="preview">
-                        <div class="previewContent">
-                            <img src="img/fileicon.svg" id="fileicon">
-                            <div class="extension"><?php echo $file['extension'] ?></div>
-                        </div>
+                <div class="preview">
+                    <div class="previewContent">
+                        <img src="img/fileicon.svg" id="fileicon">
+                        <div class="extension"><?php echo $file['extension'] ?></div>
                     </div>
-
-                    <div class="overlay">
-                        <div class="overlayContent">
-                            <div class="filesize">
-                            <?php
-
-                            if ($file['size'] > 1000000) {
-                                echo round($file['size'] / 1000000, 2) . " MB";
-                            } else {
-                                echo round($file['size'] / 1000, 2) . " KB";
-                            }
-
-                            ?>
-                            </div>
-
-                            <?php
-
-                            // TODO: Fix this timezone mess.
-
-                            $timezone = new DateTimeZone('Europe/London');
-                            $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
-                            $date->add(DateInterval::createFromDateString("+2 hours"));
-
-                            if ($date->getTimestamp() > strtotime('-1 day')) {
-                                echo "Today, " . $date->format("H:i");
-                            }
-                            else if ($date->getTimestamp() > strtotime('-2 day')) {
-                                echo "Yesterday, " . $date->format("H:i");
-                            }
-                            else if ($date->getTimestamp() > strtotime('-7 day')) {
-                                echo $date->format("l, H:i");
-                            } else {
-                                echo $date->format('l d M, Y H:i');
-                            }
-
-                            ?>
-                        </div>
-                    </div>
-
                 </div>
-                <div class="name"><?php echo $file['name'] ?></div>
-            </div>
 
-        </a>
+                <div class="overlay">
+                    <div class="overlayContent">
+                        <div class="filesize">
+                        <?php
+
+                        if ($file['size'] > 1000000) {
+                            echo round($file['size'] / 1000000, 2) . " MB";
+                        } else {
+                            echo round($file['size'] / 1000, 2) . " KB";
+                        }
+
+                        ?>
+                        </div>
+
+                        <?php
+
+                        // TODO: Fix this timezone mess.
+
+                        $timezone = new DateTimeZone('Europe/London');
+                        $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
+                        $date->add(DateInterval::createFromDateString("+2 hours"));
+
+                        if ($date->getTimestamp() > strtotime('-1 day')) {
+                            echo "Today, " . $date->format("H:i");
+                        }
+                        else if ($date->getTimestamp() > strtotime('-2 day')) {
+                            echo "Yesterday, " . $date->format("H:i");
+                        }
+                        else if ($date->getTimestamp() > strtotime('-7 day')) {
+                            echo $date->format("l, H:i");
+                        } else {
+                            echo $date->format('l d M, Y H:i');
+                        }
+
+                        ?>
+                    </div>
+                </div>
+
+            </div>
+            <div class="name"><?php echo $file['name'] ?></div>
+        </div>
 
         <?php
 

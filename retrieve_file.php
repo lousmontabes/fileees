@@ -2,40 +2,40 @@
 /**
  * Created by PhpStorm.
  * User: lluismontabes
- * Date: 18/10/17
- * Time: 18:29
+ * Date: 22/10/17
+ * Time: 19:10
  */
 
 require_once ("backend/connection.php");
-require_once ("libraries/aws/aws-autoloader.php");
 
-use Aws\S3\S3Client;
-use Aws\S3\Exception\S3Exception;
+$result = mysqli_query($con, "SELECT `name`, `type`, `format`, `extension`, `size`, `hash`, `skey`, `iv` FROM files WHERE id = {$_POST['id']}");
+$file = mysqli_fetch_array($result);
 
-$file = $_GET['file'];
+if ($_POST['hash'] == $file['hash']) {
 
-$client = S3Client::factory(array(
-    'profile' => 'files-app-user',
-    'region' => 'eu-west-2',
-    'version' => 'latest'
-));
+    $link = "https://s3.eu-west-2.amazonaws.com/files-app/".$file['hash'].".".$file['extension'];
 
-$bucket = 'files-app';
+    $contents = file_get_contents($link);
 
-try {
+// Get symmetric key and initialization vector
+    $skey = $file['skey'];
+    $iv = $file['iv'];
 
-    // Get the object
-    $result = $client->getObject(array(
-        'Bucket' => $bucket,
-        'Key'    => $file
-    ));
+//$privatekey = $file['private_key'];
 
-    // Display the object in the browser
-    header("Content-Type: {$result['ContentType']}");
-    echo $result['Body'];
+    $algorithm = "AES-128-CBC";
+    $filename = $file['name'];
 
-} catch (S3Exception $e) {
-    //echo $e->getMessage() . "\n";
+    $decrypted = openssl_decrypt($contents, $algorithm, $skey, $raw_input = false, $iv);
+
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename='.basename($filename));
+    echo $decrypted;
+
+} else {
+
+    echo "Incorrect credentials";
+
 }
 
 ?>

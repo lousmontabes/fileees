@@ -88,12 +88,45 @@ try {
     $keyname = $hash.".".$extension;
     $filepath = $_FILES['file']['tmp_name'];
 
+    // Get file byte data
+    $encryptedfile = "";
+    $filebytes = file_get_contents($filepath);
+
+    /** ENCRYPTION **/
+
+    // Initialization vector for symmetric key
+    $ivlen = openssl_cipher_iv_length("AES-128-CBC");
+    $iv = openssl_random_pseudo_bytes($ivlen);
+
+    // Generate symmetric key from random values
+    $skey = sha1(microtime(true).mt_rand(10000,90000));
+
+    // Encrypt file byte data
+    $algorithm = "AES-128-CBC";
+    $encryptedfile = openssl_encrypt($filebytes, $algorithm, $skey, $raw_output = false, $iv);
+
+    // Create a RSA key pair
+    /*$config = array(
+        "digest_alg" => "sha256"
+    );
+
+    $keypair = openssl_pkey_new($config);
+
+    // Get private key
+    openssl_pkey_export($res, $keypair);
+
+    // Get public key
+    $publickey = openssl_pkey_get_details($keypair);
+    $publickey = $publickey["key"];
+
+    openssl_public_encrypt($filebytes, $encryptedfile, $publickey);*/
+
     try {
         // Upload data.
         $result = $client->putObject(array(
             'Bucket' => $bucket,
             'Key'    => $keyname,
-            'SourceFile'   => $filepath,
+            'Body'   => $encryptedfile,
             'ACL'    => 'public-read'
         ));
 
@@ -101,8 +134,8 @@ try {
         echo $result['ObjectURL'] . "\n";
 
         // Add row to database
-        mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `size`, `uploader`, `folder`, `hash`) 
-                    VALUES ('{$name}',0,0,'{$extension}', {$size},0, {$folderId}, '{$hash}')");
+        mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `size`, `uploader`, `folder`, `hash`, `skey`, `iv`) 
+                    VALUES ('{$name}',0,0,'{$extension}', {$size},0, {$folderId}, '{$hash}', '{$skey}', '{$iv}')");
 
         $id = mysqli_insert_id($con);
 
