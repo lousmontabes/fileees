@@ -13,15 +13,14 @@ $file = mysqli_fetch_array($result);
 
 if ($_POST['hash'] == $file['hash']) {
 
-    $link = "https://s3.eu-west-2.amazonaws.com/files-app/".$file['hash'].".".$file['extension'];
-
+    $link = "https://s3.eu-west-2.amazonaws.com/files-app/".$file['hash'];
     $contents = file_get_contents($link);
 
-// Get symmetric key and initialization vector
+    // Get symmetric key and initialization vector
     $skey = $file['skey'];
     $iv = $file['iv'];
 
-//$privatekey = $file['private_key'];
+    //$privatekey = $file['private_key'];
 
     $algorithm = "AES-128-CBC";
     $filename = $file['name'];

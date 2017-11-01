@@ -85,7 +85,7 @@ try {
     // You should name it uniquely.
     // DO NOT USE $_FILES['file']['name'] WITHOUT ANY VALIDATION !!
     // On this example, obtain safe unique name from its binary data.
-    $keyname = $hash.".".$extension;
+    $keyname = $hash;
     $filepath = $_FILES['file']['tmp_name'];
 
     // Get file byte data

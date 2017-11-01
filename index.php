@@ -15,7 +15,7 @@ $colors = array("#636fa4", "#23c086", "#3494e6", "#ec6ead");
 $color = $colors[array_rand($colors)];
 
 function getRandomUiGradient() {
-    $gradientsJson = file_get_contents("http://uigradients.com/gradients.json");
+    $gradientsJson = file_get_contents("backend/gradients.json");
     $uiGradients = json_decode($gradientsJson);
 
     $gradient = $uiGradients[array_rand($uiGradients)];
