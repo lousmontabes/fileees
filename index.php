@@ -46,7 +46,7 @@ $color = getRandomUiGradient()[0];
         }
 
         .middle {
-            height: 300px;
+            padding-bottom: 10vh;
         }
 
         .footer {
