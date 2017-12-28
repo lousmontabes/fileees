@@ -34,6 +34,7 @@ $color = getRandomUiGradient()[0];
     <meta charset="UTF-8">
     <title>Files</title>
 
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" />
 
@@ -46,6 +47,24 @@ $color = getRandomUiGradient()[0];
 
         .middle {
             height: 300px;
+        }
+
+        .footer {
+            position:fixed;
+            bottom:0;
+            height:1.5em;
+            padding:1.9em 1em;
+            width: 100vw;
+            color: grey;
+            font-family: "Open Sans";
+            font-weight: 100;
+            font-size: 12px;
+        }
+
+        .logo {
+            color: <?php echo $color ?>;
+            font-family: "Pacifico";
+            font-size: 18px;
         }
 
         .button {
@@ -145,6 +164,8 @@ $color = getRandomUiGradient()[0];
     </div>
 
 </div>
+
+<div class="footer"><span class="logo">filee.es</span> · All files are stored using AES-128 encryption.</div>
 
 <script>
 

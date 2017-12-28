@@ -1,6 +1,6 @@
 <?php
 
-require_once("backend/connection.php");
+require_once("./backend/connection.php");
 
 if (!isset ($_GET['folder'])) {
     // ERROR: The 'folder' GET parameter is not set.
@@ -29,6 +29,7 @@ if (!isset ($_GET['folder'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <base href="/"/>
     <title><?php echo $folderName?> on Fileees</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
