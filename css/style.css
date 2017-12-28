@@ -71,6 +71,7 @@ a {
     font-family: Europa, sans-serif;
     display: inline-block;
     padding: 10px;
+    cursor: pointer;
 }
 
 .item .view {

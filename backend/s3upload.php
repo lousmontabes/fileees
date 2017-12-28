@@ -99,7 +99,11 @@ try {
     $iv = openssl_random_pseudo_bytes($ivlen);
 
     // Generate symmetric key from random values
-    $skey = sha1(microtime(true).mt_rand(10000,90000));
+    $skey = sha1(microtime(true).mt_rand(10000, 90000));
+
+    // TODO: Asymmetric encryption
+    //$keypairpath = "";
+    //$publicKey = file_get_contents($keypairpath . "/public");
 
     // Encrypt file byte data
     $algorithm = "AES-128-CBC";

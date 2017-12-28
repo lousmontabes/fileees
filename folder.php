@@ -29,7 +29,7 @@ if (!isset ($_GET['folder'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Files</title>
+    <title><?php echo $folderName?> on Fileees</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" />
@@ -159,6 +159,7 @@ if (!isset ($_GET['folder'])) {
             $.post("backend/change_folder_name.php", {id: <?php echo $folderId ?>, name: newName}).done(function(){
                titleDiv.removeClass("greyed");
             });
+            updateTitle(newName);
         } else {
             titleDiv.html(folderName);
         }
@@ -172,6 +173,10 @@ if (!isset ($_GET['folder'])) {
 
     function getFile(id) {
         $("#downloadform" + id).submit();
+    }
+
+    function updateTitle(newName) {
+        $('head title', window.parent.document).text(newName + ' on Fileees');
     }
 
 </script>
