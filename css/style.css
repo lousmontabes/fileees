@@ -194,6 +194,7 @@ a {
     align-items: center;
     -webkit-justify-content: center;
     justify-content: center;
+    min-height: 350px;
 }
 
 .emptystate {
