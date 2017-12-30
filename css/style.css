@@ -8,6 +8,10 @@ a {
     text-decoration: none;
 }
 
+body {
+    margin: 0;
+}
+
 .centered {
     margin-left: auto;
     margin-right: auto;
@@ -16,6 +20,24 @@ a {
 .area {
     margin-left: 5vw;
     margin-right: 2vw;
+}
+
+.footer {
+    position:fixed;
+    bottom:0;
+    height:1.5em;
+    padding:1.9em 1em;
+    width: 100vw;
+    color: grey;
+    font-family: "Open Sans";
+    font-weight: 100;
+    font-size: 12px;
+}
+
+.logo {
+    color: black;
+    font-family: "Pacifico";
+    font-size: 18px;
 }
 
 .titlewrap{
@@ -34,7 +56,6 @@ a {
 .title {
     transition: 0.3s;
     display: inline-block;
-    margin-left: 10px;
     border-bottom: 1px solid transparent;
     margin-bottom: 3px;
 }

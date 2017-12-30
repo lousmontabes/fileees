@@ -29,12 +29,22 @@ if (!isset ($_GET['folder'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <base href="/"/>
     <title><?php echo $folderName?> on Fileees</title>
 
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" />
     <link href="libraries/animate.css" rel="stylesheet" />
+
+    <style>
+        .logo {
+            transition: 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.5;
+        }
+    </style>
 
 </head>
 <body>
@@ -46,7 +56,7 @@ if (!isset ($_GET['folder'])) {
 
     <div class="titlewrap big">
 
-        <div id="title" class="title big" contenteditable="true" spellcheck="false"><?php echo $folderName ?></div>
+        <div id="title" class="title big" style="margin-left: 10px" contenteditable="true" spellcheck="false"><?php echo $folderName ?></div>
 
     </div>
 
@@ -78,6 +88,8 @@ if (!isset ($_GET['folder'])) {
         <div class="name">Uploading...</div>
     </div>
 </div>
+
+<div class="footer"><a href="./"><span class="logo">filee.es</span></a> · All files are stored using AES-128 encryption.</div>
 
 <script>
 

@@ -32,7 +32,7 @@ $color = getRandomUiGradient()[0];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Files</title>
+    <title>fileees</title>
 
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
@@ -47,24 +47,11 @@ $color = getRandomUiGradient()[0];
 
         .middle {
             padding-bottom: 5vh;
-        }
-
-        .footer {
-            position:fixed;
-            bottom:0;
-            height:1.5em;
-            padding:1.9em 1em;
-            width: 100vw;
-            color: grey;
-            font-family: "Open Sans";
-            font-weight: 100;
-            font-size: 12px;
+            margin: 5em;
         }
 
         .logo {
             color: <?php echo $color ?>;
-            font-family: "Pacifico";
-            font-size: 18px;
         }
 
         .button {
@@ -112,11 +99,18 @@ $color = getRandomUiGradient()[0];
             top: 0;
             width: 100vw;
             background: <?php echo $color ?>;
-            padding: .5em;
+            padding: .5em 0;
             color: white;
             font-family: "open sans";
             text-align: center;
             font-weight: 100;
+        }
+
+        .bannerWrap {
+            display: inline-block;
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         form {
@@ -126,22 +120,70 @@ $color = getRandomUiGradient()[0];
         .input {
             display: inline-block;
             transition: 0.3s;
-            background: transparent;
             border: none;
-            border-bottom: 1px solid white;
             color: white;
-            font-family: "open sans";
+            font-family: "Open Sans";
             font-size: 16px;
             text-align: center;
             min-width: 7em;
             font-weight: 400;
             opacity: 0.75;
-            padding: .1em .5em;
+            background: rgba(255, 255, 255, 0.5);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+            padding: .1em 20px;
+            padding-right: .6em;
+        }
+
+        .input:hover, .input:focus{
+            min-width: 9em;
         }
 
         .input:focus {
+            min-width: 12em;
             outline: none;
             opacity: 1;
+        }
+
+        #ampersandIcon {
+            height: 16px;
+            position: absolute;
+            opacity: .7;
+            margin: 2px 5px;
+            font-weight: 500;
+        }
+
+        .bannerProp {
+            display: inline-block;
+            transition: .2s;
+            opacity: 0;
+            margin: 2px 5px;
+            font-weight: 500;
+            width: 60px;
+            float: left;
+            overflow: hidden;
+            text-align: left;
+            cursor: default;
+        }
+
+        #urlIcon {
+            float: left;
+        }
+
+        #goIcon {
+            float: right;
+            background: rgba(255,255,255,0.5);
+            border-radius: 6px;
+            text-align: center;
+            padding: .1em;
+            width: 30px;
+            margin: 1px 5px;
+            margin-right: 27px;
+            cursor: pointer;
+        }
+
+        #goIcon:hover {
+            transform: scale(1.1);
         }
 
     </style>
@@ -151,7 +193,14 @@ $color = getRandomUiGradient()[0];
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<div class="banner">Enter token: <form action="folder.php" method="get"><div class="input" id="token" contenteditable="true"></div></form> </div>
+<div class="banner">
+    <div class="bannerWrap">
+        <div id="urlIcon" class="bannerProp">filee.es/</div>
+        <span id="ampersandIcon">&</span>
+        <form action="folder.php" method="get"><div class="input" id="token" contenteditable="true"></div></form>
+        <div id="goIcon" class="bannerProp">Go</div>
+    </div>
+</div>
 
 <div class="centerwrap">
 
@@ -170,13 +219,58 @@ $color = getRandomUiGradient()[0];
 <script>
 
     var tokenDiv = $("#token");
+    var ampersandDiv = $("#ampersandIcon");
+    var urlDiv = $("#urlIcon");
+    var goDiv = $("#goIcon");
 
     tokenDiv.keypress(function(e) {
         if (e.which == 13) {
-            window.location.href = "folder.php?folder=" + tokenDiv.html().replace(/\s+/g, '');
+            goToFolder();
             e.preventDefault();
         }
     });
+
+    tokenDiv.hover(function(e) {
+        if (!tokenDiv.is(":focus")) {
+            peekProps();
+        }
+    }, function (e) {
+        if (!tokenDiv.is(":focus")) {
+            hideProps();
+        }
+    });
+
+    tokenDiv.focus(function(e) {
+        showProps();
+    });
+
+    tokenDiv.blur(function(e) {
+        hideProps();
+    });
+
+    goDiv.click(function(e){
+        goToFolder();
+    });
+
+    function peekProps() {
+        urlDiv.css("opacity", .2);
+        goDiv.css("opacity", .2);
+    }
+
+    function showProps() {
+        urlDiv.css("opacity", .7);
+        goDiv.css("opacity", .7);
+    }
+
+    function hideProps() {
+        urlDiv.css("opacity", 0);
+        goDiv.css("opacity", 0);
+    }
+
+    function goToFolder() {
+        window.location.href = "folder.php?folder=" + tokenDiv.html().replace(/\s+/g, '');
+    }
+
 
 </script>
 
