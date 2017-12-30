@@ -32,158 +32,31 @@ $color = getRandomUiGradient()[0];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, user-scalable=no">
+
     <title>fileees</title>
 
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+
     <link href="css/style.css" rel="stylesheet" />
 
     <style>
-
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-
-        .middle {
-            padding-bottom: 5vh;
-            margin: 5em;
-        }
-
         .logo {
             color: <?php echo $color ?>;
         }
 
         .button {
-            transition: 0.3s;
-            padding: 2em;
             color: <?php echo $color ?>;
-            font-family: open sans;
-            text-align: center;
-            border-radius: 6px;
-            font-weight: 400;
-            border: 2px solid <?php echo $color ?>;
-            border-bottom-width: 4px;
+            border-color: <?php echo $color ?>;
         }
 
         .button:hover {
-            transform: scale(1.07);
             background: <?php echo $color ?>;
-            color: white;
-        }
-
-        .button:active {
-            transform: scale(0.97);
-        }
-
-        .grandeur {
-            background: #000046;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to bottom, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to bottom, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        }
-
-        .rose {
-            background: #E8CBC0;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #636FA4, #E8CBC0);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #636FA4, #E8CBC0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        }
-
-        .vicecity {
-            background: #3494E6;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #EC6EAD, #3494E6);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #EC6EAD, #3494E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         }
 
         .banner {
-            position: fixed;
-            top: 0;
-            width: 100vw;
             background: <?php echo $color ?>;
-            padding: .5em 0;
-            color: white;
-            font-family: "open sans";
-            text-align: center;
-            font-weight: 100;
-        }
-
-        .bannerWrap {
-            display: inline-block;
-            position: relative;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        form {
-            display: inline;
-        }
-
-        .input {
-            display: inline-block;
-            transition: 0.3s;
-            border: none;
-            color: white;
-            font-family: "Open Sans";
-            font-size: 16px;
-            text-align: center;
-            min-width: 7em;
-            font-weight: 400;
-            opacity: 0.75;
-            background: rgba(255, 255, 255, 0.5);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 3px;
-            padding: .1em 20px;
-            padding-right: .6em;
-        }
-
-        .input:hover, .input:focus{
-            min-width: 9em;
-        }
-
-        .input:focus {
-            min-width: 12em;
-            outline: none;
-            opacity: 1;
-        }
-
-        #ampersandIcon {
-            height: 16px;
-            position: absolute;
-            opacity: .7;
-            margin: 2px 5px;
-            font-weight: 500;
-        }
-
-        .bannerProp {
-            display: inline-block;
-            transition: .2s;
-            opacity: 0;
-            margin: 2px 5px;
-            font-weight: 500;
-            width: 60px;
-            float: left;
-            overflow: hidden;
-            text-align: left;
-            cursor: default;
-        }
-
-        #urlIcon {
-            float: left;
-        }
-
-        #goIcon {
-            float: right;
-            background: rgba(255,255,255,0.5);
-            border-radius: 6px;
-            text-align: center;
-            padding: .1em;
-            width: 30px;
-            margin: 1px 5px;
-            margin-right: 27px;
-            cursor: pointer;
-        }
-
-        #goIcon:hover {
-            transform: scale(1.1);
         }
 
     </style>

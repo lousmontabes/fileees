@@ -29,10 +29,13 @@ if (!isset ($_GET['folder'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, user-scalable=no">
+
     <title><?php echo $folderName?> on Fileees</title>
 
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    
     <link href="css/style.css" rel="stylesheet" />
     <link href="libraries/animate.css" rel="stylesheet" />
 
@@ -43,6 +46,24 @@ if (!isset ($_GET['folder'])) {
 
         .logo:hover {
             opacity: 0.5;
+        }
+
+        @media (max-width: 750px) {
+
+            /* Mobile tweaks */
+
+            .item {
+                min-width: 140px;
+            }
+
+            .item .previewContent {
+                padding: 1em;
+            }
+
+            .titlewrap {
+                margin-top: 10px;
+                margin-bottom: 0;
+            }
         }
     </style>
 
