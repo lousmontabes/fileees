@@ -137,50 +137,89 @@ if (!isset ($_GET['folder'])) {
     var encryptedMessageHtml = encryptedMessageDiv.html();
     var publicKey = "<?php echo $publickey ?>";
     var privateKey = getPrivateKeyFromUrl();
-    var fileReaderUploader = new FileReader();
-    var decoder = new TextDecoder();
-    var encoder = new TextEncoder();
 
-    fileReaderUploader.onload = function() {
+    /**
+     * Class that defines a file and its corresponding FileReader to manage file uploads.
+     */
+    class FileUpload {
 
-        console.log("Trying to read file");
+        constructor(file) {
 
-        var arrayBuffer = this.result,
-            array = new Uint8Array(arrayBuffer),
-            binaryString = decoder.decode(array);
+            // File to be uploaded.
+            this.file = file;
 
-        console.log(array);
+            // FileReader to read file data.
+            this.fileReader = new FileReader();
 
-        var encrypted = encryptFile(binaryString);
-        uploadFile(encrypted.data, encrypted.key);
-    };
+            // Function to be ran once FileReader is done reading file data.
+            this.fileReader.onload = function(){
 
+                console.log(file.name);
+
+                // Get resulting byte ArrayBuffer
+                var arrayBuffer = this.result;
+
+                // Encrypt base64-encoded string
+                var encrypted = encryptFile(arrayBuffer);
+
+                // Make AJAX call to server script to upload the encrypted data
+                // and corresponding encrypted symmetric key onto server
+                uploadFile(file.name, arrayBuffer.byteLength, encrypted.data, encrypted.key);
+
+            };
+        }
+
+        proceed() {
+            this.fileReader.readAsArrayBuffer(this.file);
+        }
+
+    }
+
+    /**
+     * Dropzone script to detect file drag-and-drop
+     */
     var dropzone = new Dropzone("div#mainGrid", {
         url: "backend/dummy_upload.php",
         init: function() {
             this.on("sending", function(file, xhr, formData){
 
-                fileReaderUploader.readAsArrayBuffer(file);
-                formData.append("folderId", folderId);
+                fileUpload = new FileUpload(file);
+                fileUpload.proceed();
 
             });
         }
     });
 
+    /**
+     * Encrypt file using encryption.js using globally defined public key for current folder.
+     * @param bytes:    Byte array or ArrayBuffer containing data to be encrypted.
+     * @returns:        Encrypted data and key.
+     */
     function encryptFile(bytes) {
-        var encrypted = fullEncrypt(bytes, publicKey);
+
+        // Encode byte array into base64 string
+        var binaryString = arrayBufferToBase64(bytes);
+
+        var encrypted = fullEncrypt(binaryString, publicKey);
         return {data: encrypted.data.toString(), key: encrypted.key};
     }
 
-    function uploadFile(data, key) {
+    /**
+     * Make AJAX call to server script to upload encrypted file and key.
+     * @param name:     Name to associate the file with.
+     * @param size:     Size (in bytes) of the file.
+     * @param data:     Encrypted data to be uploaded as a file onto the server.
+     * @param key:      Encrypted symmetric key data has been encrypted with.
+     */
+    function uploadFile(name, size, data, key) {
 
         $.ajax({
             type: 'POST',
             url: 'backend/upload_file.php',
             data: {
                 folderId: folderId,
-                name: "test.txt",
-                size: 1970,
+                name: name,
+                size: size,
                 bytes: data,
                 key: key
             }
@@ -196,27 +235,48 @@ if (!isset ($_GET['folder'])) {
 
     }
 
+    /**
+     * Dropzone events
+     */
+
     dropzone.on("addedfile", function(file) {
+
+        // If no files had been added (empty-state screen was showing) hide empty-state screen.
         if (nextItemId == 0) $("#emptystate").css("display", "none");
+
+        // Add dummy item represending new file.
         addDummyItem();
     });
-    
+
     dropzone.on("success", function(file, response) {
         // Delegated to uploadFile(), inside .done()
     });
 
     dropzone.on("dragover", function() {
-       mainGridDiv.addClass("dragging");
+
+        // Update UI to show reaction to user dragging file.
+        mainGridDiv.addClass("dragging");
+
     });
 
     dropzone.on("dragleave", function () {
+
+        // Update UI to undo reaction to user dragging file.
         mainGridDiv.removeClass("dragging");
+
     });
 
+    /**
+     * Update grid area with specified html.
+     * @param newHtml:  New html to display in grid area.
+     */
     function updateMainGrid(newHtml) {
         mainGridDiv.html(newHtml);
     }
 
+    /**
+     * Add dummy file div to UI.
+     */
     function addDummyItem() {
 
         dummyItem.children().attr('id', 'item' + nextItemId);
@@ -228,6 +288,9 @@ if (!isset ($_GET['folder'])) {
 
     }
 
+    /**
+     * Runs when user presses Enter key while editing title div.
+     */
     titleDiv.keypress(function(e) {
         if (e.which == 13) {
             titleDiv.blur();
@@ -236,15 +299,24 @@ if (!isset ($_GET['folder'])) {
         }
     });
 
+    /**
+     * Runs when user clicks on title div.
+     */
     titleDiv.focus(function() {
         window.getSelection().selectAllChildren(document.getElementById("title"));
         titleDiv.addClass("greyed");
     });
 
+    /**
+     * Runs when user clicks away from title div or is done editing.
+     */
     titleDiv.blur(function() {
         enterNewTitle();
     });
 
+    /**
+     * Change title of the folder.
+     */
     function enterNewTitle() {
 
         var newName = titleDiv.html();
@@ -261,18 +333,21 @@ if (!isset ($_GET['folder'])) {
 
     }
 
-    /*$("div#mainGrid").dropzone({
-        url: "backend/simple_upload.php"
-
-    });*/
-
-    function getFile(id, hash) {
+    /**
+     * Get file data from server for a specified ID and hash.
+     * @param id    ID of the file to retrieve
+     * @param hash  Hash of the file to retrieve
+     */
+    function retrieveFile(id, hash) {
 
         if (privateKey == "") {
 
+            // No private key has been specified: file cannot be decrypted.
             alert("Couldn't decrypt: no key provided.");
 
         } else {
+
+            // Make AJAX call to retrieve encrypted file data.
             $.ajax({
                 type: 'POST',
                 url: 'backend/retrieve_file.php',
@@ -280,18 +355,27 @@ if (!isset ($_GET['folder'])) {
             }).done(function(response) {
 
                 var json = jQuery.parseJSON(response);
+                var name = json.name;
                 var data = json.data;
                 var key = json.key;
 
+                // Attempt to decrypt key & file with specified private key.
                 try {
+
+                    // Decrypt file. Throws exception if decryption isn't possible.
                     var decrypted = fullDecrypt(data, key, privateKey);
-                    var bytes = encoder.encode(decrypted);
 
-                    console.log(bytes);
+                    // Decode base64 encoded string into byte ArrayBuffer.
+                    var bytes = base64ToArrayBuffer(decrypted);
 
-                    saveFile("test", "txt", bytes);
+                    // Download decoded file onto user's device.
+                    saveFile(name, bytes);
+
                 } catch (ex) {
+
+                    // File couldn't be decrypted using the provided key.
                     alert("Couldn't decrypt: incorrect key.");
+
                 }
 
             });
@@ -326,6 +410,16 @@ if (!isset ($_GET['folder'])) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
     function base64ToArrayBuffer(base64) {
         var binaryString = window.atob(base64);
         var binaryLen = binaryString.length;
@@ -337,11 +431,11 @@ if (!isset ($_GET['folder'])) {
         return bytes;
     }
 
-    function saveFile(name, extension, bytes) {
+    function saveFile(name, bytes) {
         var blob = new Blob([bytes]);
         var link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        var fileName = name + "." + extension;
+        var fileName = name;
         link.download = fileName;
         link.click();
     }

@@ -24,6 +24,7 @@ if ($_POST['hash'] == $file['hash']) {
     $filename = $file['name'];
 
     $response = array(
+        'name' => $filename,
         'data' => $contents,
         'key' => $skey
     );
