@@ -1,17 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lluismontabes
- * Date: 22/10/17
- * Time: 19:10
- */
 
 // Require connection to the database
-require_once ("backend/connection.php");
-
-// Get private key specified by the user
-$privatekey = html_entity_decode($_POST['key']);
-$privatekey = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $privatekey);
+require_once ("connection.php");
 
 // Retrieve file info from database
 $result = mysqli_query($con, "SELECT `name`, `type`, `format`, `extension`, `size`, `hash`, `skey`, `iv` FROM files WHERE id = {$_POST['id']}");
@@ -30,23 +20,21 @@ if ($_POST['hash'] == $file['hash']) {
     $skey = $file['skey'];
     $iv = $file['iv'];
 
-    // Decrypt symmetric key
-    $decryptedkey = "";
-    openssl_private_decrypt($skey, $decryptedkey, $privatekey);
-
-    // Decrypt symmetrically encrypted file
-    $algorithm = "AES-128-CBC";
+    // Get file name
     $filename = $file['name'];
 
-    $decrypted = openssl_decrypt($contents, $algorithm, $decryptedkey, $raw_input = false, $iv);
+    $response = array(
+        'data' => $contents,
+        'key' => $skey
+    );
 
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename='.basename($filename));
-    echo $decrypted;
+    echo json_encode($response);
+    exit;
 
 } else {
 
     echo "Incorrect credentials";
+    exit;
 
 }
 

@@ -21,7 +21,7 @@ if (!isset($files)) {
         while ($row = mysqli_fetch_array($result)) {
             array_push($files, $row);
         }
-
+        
     }
 
 }
@@ -54,7 +54,7 @@ if (empty($files)) {
             <input type="hidden" name="hash" value="<?php echo $file['hash'] ?>">
         </form>
 
-        <div class="item" id="item<?php echo $i ?>" onclick="getFile(<?php echo $file['id'] ?>)">
+        <div class="item" id="item<?php echo $i ?>" onclick="getFile(<?php echo $file['id'] ?>, '<?php echo $file['hash'] ?>')">
             <div class="view jpg">
 
                 <div class="preview">

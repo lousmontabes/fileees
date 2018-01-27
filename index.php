@@ -32,97 +32,31 @@ $color = getRandomUiGradient()[0];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Files</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, user-scalable=no">
 
+    <title>fileees</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+
     <link href="css/style.css" rel="stylesheet" />
 
     <style>
-
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-
-        .middle {
-            height: 300px;
+        .logo {
+            color: <?php echo $color ?>;
         }
 
         .button {
-            transition: 0.3s;
-            padding: 2em;
             color: <?php echo $color ?>;
-            font-family: open sans;
-            text-align: center;
-            border-radius: 6px;
-            font-weight: 400;
-            border: 2px solid <?php echo $color ?>;
-            border-bottom-width: 4px;
+            border-color: <?php echo $color ?>;
         }
 
         .button:hover {
-            transform: scale(1.07);
             background: <?php echo $color ?>;
-            color: white;
-        }
-
-        .button:active {
-            transform: scale(0.97);
-        }
-
-        .grandeur {
-            background: #000046;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to bottom, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to bottom, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        }
-
-        .rose {
-            background: #E8CBC0;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #636FA4, #E8CBC0);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #636FA4, #E8CBC0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        }
-
-        .vicecity {
-            background: #3494E6;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #EC6EAD, #3494E6);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #EC6EAD, #3494E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         }
 
         .banner {
-            position: fixed;
-            top: 0;
-            width: 100vw;
             background: <?php echo $color ?>;
-            padding: .5em;
-            color: white;
-            font-family: "open sans";
-            text-align: center;
-            font-weight: 100;
-        }
-
-        form {
-            display: inline;
-        }
-
-        .input {
-            display: inline-block;
-            transition: 0.3s;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid white;
-            color: white;
-            font-family: "open sans";
-            font-size: 16px;
-            text-align: center;
-            min-width: 7em;
-            font-weight: 400;
-            opacity: 0.75;
-            padding: .1em .5em;
-        }
-
-        .input:focus {
-            outline: none;
-            opacity: 1;
         }
 
     </style>
@@ -132,30 +66,87 @@ $color = getRandomUiGradient()[0];
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<div class="banner">Enter token: <form action="folder.php" method="get"><div class="input" id="token" contenteditable="true"></div></form> </div>
+<script src="libraries/ecc.min.js"></script>
+<script src="libraries/aes.js"></script>
+<script src="libraries/crypto/encryption.js"></script>
+
+<div class="banner">
+    <div class="bannerWrap">
+        <div id="urlIcon" class="bannerProp">filee.es/</div>
+        <span id="ampersandIcon">&</span>
+        <form action="folder.php" method="get"><div class="input" id="token" contenteditable="true"></div></form>
+        <div id="goIcon" class="bannerProp">Go</div>
+    </div>
+</div>
 
 <div class="centerwrap">
 
     <div class="middle">
 
         <div class="title big"><?php echo $phrase ?></div>
-
-        <a href="new_folder.php"><div class="button big">Create a folder</div></a>
+        <a href="setup_folder.php?c=<?php echo substr($color, 1) ?>"><div class="button big">Create a folder</div></a>
 
     </div>
 
 </div>
 
+<?php include("modules/footer.php") ?>
+
 <script>
 
     var tokenDiv = $("#token");
+    var ampersandDiv = $("#ampersandIcon");
+    var urlDiv = $("#urlIcon");
+    var goDiv = $("#goIcon");
 
     tokenDiv.keypress(function(e) {
         if (e.which == 13) {
-            window.location.href = "folder.php?folder=" + tokenDiv.html().replace(/\s+/g, '');
+            goToFolder();
             e.preventDefault();
         }
     });
+
+    tokenDiv.hover(function(e) {
+        if (!tokenDiv.is(":focus")) {
+            peekProps();
+        }
+    }, function (e) {
+        if (!tokenDiv.is(":focus")) {
+            hideProps();
+        }
+    });
+
+    tokenDiv.focus(function(e) {
+        showProps();
+    });
+
+    tokenDiv.blur(function(e) {
+        hideProps();
+    });
+
+    goDiv.click(function(e){
+        goToFolder();
+    });
+
+    function peekProps() {
+        urlDiv.css("opacity", .2);
+        goDiv.css("opacity", .2);
+    }
+
+    function showProps() {
+        urlDiv.css("opacity", .7);
+        goDiv.css("opacity", .7);
+    }
+
+    function hideProps() {
+        urlDiv.css("opacity", 0);
+        goDiv.css("opacity", 0);
+    }
+
+    function goToFolder() {
+        window.location.href = "folder.php?folder=" + tokenDiv.html().replace(/\s+/g, '');
+    }
+
 
 </script>
 
