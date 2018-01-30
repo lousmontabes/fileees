@@ -184,8 +184,18 @@ form {
 }
 
 .titlewrap{
-    margin-top: 50px;
-    margin-bottom: 22px;
+    transition: .3s;
+    position: fixed;
+    padding-top: 50px;
+    padding-bottom: 22px;
+    z-index: 1000;
+    width: 100%;
+}
+
+.titlewrap.retracted {
+    padding-top: 22px;
+    padding-bottom: 10px;
+    background: rgba(255,255,255,0.9);
 }
 
 .titlewrap.small {
@@ -193,7 +203,7 @@ form {
 }
 
 .title {
-    transition: 0.3s;
+    transition: .3s;
     display: inline-block;
     border-bottom: 1px solid transparent;
     margin-bottom: 3px;
@@ -209,7 +219,10 @@ form {
     font-family: "League Spartan";
     font-weight: 500;
     font-size: 42px;
-    padding: 15px 0;
+}
+
+.title.retracted {
+    font-size: 28px;
 }
 
 .title.small {
@@ -221,6 +234,7 @@ form {
 .grid {
     transition: 0.3s;
     border-radius: 4px;
+    padding-bottom: 60px;
 }
 
 .item {

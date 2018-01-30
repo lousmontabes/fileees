@@ -48,21 +48,28 @@ if (!isset ($_GET['folder'])) {
             opacity: 0.5;
         }
 
-        @media (max-width: 750px) {
+        .spacer {
+            height: 130px;
+        }
+
+        @media (max-width: 500px) {
 
             /* Mobile tweaks */
 
+            /* Let items be smaller */
             .item {
                 min-width: 140px;
             }
 
+            /* Make previews take less empty space inside item */
             .item .previewContent {
                 padding: 1em;
             }
 
+            /* Make title take less empty space at the top of the page */
             .titlewrap {
-                margin-top: 10px;
-                margin-bottom: 0;
+                padding-top: 20px;
+                padding-bottom: 0;
             }
         }
     </style>
@@ -75,10 +82,12 @@ if (!isset ($_GET['folder'])) {
 
 <div class="centered area">
 
-    <div class="titlewrap big">
-
+    <div class="titlewrap big" id="titlewrap">
         <div id="title" class="title big" style="margin-left: 10px" contenteditable="true" spellcheck="false"><?php echo $folderName ?></div>
+    </div>
 
+    <div class="spacer">
+        &nbsp;
     </div>
 
     <div class="grid" id="mainGrid">
@@ -115,11 +124,23 @@ if (!isset ($_GET['folder'])) {
 <script>
 
     var folderName = "<?php echo $folderName ?>";
+    var titleWrapDiv = $("#titlewrap");
     var titleDiv = $("#title");
     var mainGridDiv = $("#mainGrid");
     var nextItemId = <?php echo $i ?>;
     var lastItem = $("#item<?php echo $i - 1 ?>");
     var dummyItem = $("#dummyItem");
+
+    $(window).scroll(function() {
+
+        if ($(document).scrollTop() > 30) {
+            titleWrapDiv.addClass("retracted");
+            titleDiv.addClass("retracted");
+        } else {
+            titleWrapDiv.removeClass("retracted");
+            titleDiv.removeClass("retracted");
+        }
+    });
 
     var dropzone = new Dropzone("div#mainGrid", {
         url: "backend/s3upload.php",
