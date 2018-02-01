@@ -286,7 +286,7 @@ form {
     opacity: 1;
 }
 
-#fileicon {
+.fileicon {
     width: 2vw;
     min-width: 21px;
 }

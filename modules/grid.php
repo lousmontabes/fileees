@@ -59,7 +59,7 @@ if (empty($files)) {
 
                 <div class="preview">
                     <div class="previewContent">
-                        <img src="img/fileicon.svg" id="fileicon">
+                        <img src="img/fileicon.svg" class="fileicon">
                         <div class="extension"><?php echo $file['extension'] ?></div>
                     </div>
                 </div>
