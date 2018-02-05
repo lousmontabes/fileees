@@ -12,6 +12,10 @@ body {
     margin: 0;
 }
 
+::selection {
+    background: rgba(17, 153, 142, 0.5);
+}
+
 /* INDEX.PHP STYLES */
 
 html, body {

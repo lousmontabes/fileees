@@ -42,6 +42,11 @@ $color = getRandomUiGradient()[0];
     <link href="css/style.css" rel="stylesheet" />
 
     <style>
+
+        ::selection {
+            background: <?php echo $color ?>;
+        }
+
         .logo {
             color: <?php echo $color ?>;
         }
