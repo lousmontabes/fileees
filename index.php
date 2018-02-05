@@ -85,14 +85,13 @@ $color = getRandomUiGradient()[0];
     <div class="middle">
 
         <div class="title big"><?php echo $phrase ?></div>
-
-        <a href="new_folder.php"><div class="button big">Create a folder</div></a>
+        <a href="setup_folder.php?c=<?php echo substr($color, 1) ?>"><div class="button big">Create a folder</div></a>
 
     </div>
 
 </div>
 
-<div class="footer"><span class="logo">filee.es</span> · All files are stored using AES-128 encryption.</div>
+<?php include("modules/footer.php") ?>
 
 <script>
 

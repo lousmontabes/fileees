@@ -203,7 +203,7 @@ form {
 }
 
 .titlewrap.small {
-    margin-top: 25px;
+    padding-top: 25px;
 }
 
 .title {
@@ -409,4 +409,21 @@ form {
 .greyed {
     color: rgb(110, 110, 110);
     opacity: 0.75;
+}
+
+.subtitle {
+    transition: .2s;
+    font-family: "Open Sans";
+    font-size: 13px;
+    width: 6em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 10px;
+    color: #11998e;
+    cursor: default;
+}
+
+.subtitle:hover{
+    width: 35em;
 }

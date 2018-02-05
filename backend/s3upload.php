@@ -14,6 +14,12 @@ use Aws\S3\Exception\S3Exception;
 
 $folderId = $_POST['folderId'];
 
+$result = mysqli_query($con, "SELECT `public_key` FROM `folders` WHERE id = '{$folderId}'");
+$row = mysqli_fetch_array($result);
+
+$publickey = $row['public_key'];
+echo $publickey;
+
 $client = S3Client::factory(array(
     'profile' => 'files-app-user',
     'region' => 'eu-west-2',
@@ -105,25 +111,13 @@ try {
     //$keypairpath = "";
     //$publicKey = file_get_contents($keypairpath . "/public");
 
-    // Encrypt file byte data
+    // Encrypt file byte data with symmetric key
     $algorithm = "AES-128-CBC";
     $encryptedfile = openssl_encrypt($filebytes, $algorithm, $skey, $raw_output = false, $iv);
 
-    // Create a RSA key pair
-    /*$config = array(
-        "digest_alg" => "sha256"
-    );
-
-    $keypair = openssl_pkey_new($config);
-
-    // Get private key
-    openssl_pkey_export($res, $keypair);
-
-    // Get public key
-    $publickey = openssl_pkey_get_details($keypair);
-    $publickey = $publickey["key"];
-
-    openssl_public_encrypt($filebytes, $encryptedfile, $publickey);*/
+    // Encrypt symmetric key with public key
+    $encryptedkey = "";
+    openssl_public_encrypt($skey, $encryptedkey, $publickey);
 
     try {
         // Upload data.
@@ -139,7 +133,7 @@ try {
 
         // Add row to database
         mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `size`, `uploader`, `folder`, `hash`, `skey`, `iv`) 
-                    VALUES ('{$name}',0,0,'{$extension}', {$size},0, {$folderId}, '{$hash}', '{$skey}', '{$iv}')");
+                    VALUES ('{$name}',0,0,'{$extension}', {$size},0, {$folderId}, '{$hash}', '{$encryptedkey}', '{$iv}')");
 
         $id = mysqli_insert_id($con);
 
