@@ -95,7 +95,7 @@ if (!isset ($_GET['folder'])) {
 
 <div class="centered area">
 
-    <div class="titlewrap big">
+    <div class="titlewrap big" id="titlewrap">
 
         <div id="title" class="title big" style="margin-left: 10px" contenteditable="true" spellcheck="false"><?php echo $folderName ?></div>
         <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> Encrypted</div>

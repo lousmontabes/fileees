@@ -178,7 +178,7 @@ form {
     font-family: "Open Sans";
     font-weight: 100;
     font-size: 12px;
-    background: rgba(255,255,255,0.9);
+    background: white;
 }
 
 .logo {
@@ -192,14 +192,14 @@ form {
     position: fixed;
     padding-top: 50px;
     padding-bottom: 22px;
-    z-index: 1000;
+    z-index: 500;
     width: 100%;
 }
 
 .titlewrap.retracted {
     padding-top: 22px;
     padding-bottom: 10px;
-    background: rgba(255,255,255,0.9);
+    background: white;
 }
 
 .titlewrap.small {
