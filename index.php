@@ -66,10 +66,6 @@ $color = getRandomUiGradient()[0];
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<script src="libraries/ecc.min.js"></script>
-<script src="libraries/aes.js"></script>
-<script src="libraries/crypto/encryption.js"></script>
-
 <div class="banner">
     <div class="bannerWrap">
         <div id="urlIcon" class="bannerProp">filee.es/</div>

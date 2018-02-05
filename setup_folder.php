@@ -1,6 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="libraries/dropzone.js"></script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,9 +57,11 @@
 <body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+<script src="libraries/crypto/aes.js"></script>
+<script src="libraries/crypto/pbkdf2.js"></script>
 <script src="libraries/crypto/ecc-min.js"></script>
 <script src="libraries/crypto/encryption.js"></script>
+<script src="libraries/dropzone.js"></script>
 
 <div class="emptystate animated" id="curtain">
     <div class="centerwrap">
@@ -97,11 +96,13 @@
                 type: 'GET',
                 url: 'folder.php',
                 data: {folder: json.token}
+
             }).done(function(data) {
                 window.history.pushState("", "Folder", "folder.php#" + keypair.private);
                 $('head title').text(json.name + ' on Filee.es');
                 $("#ajax").html(data);
                 $("#curtain").addClass("bounceOutUp");
+
             });
 
         } else {

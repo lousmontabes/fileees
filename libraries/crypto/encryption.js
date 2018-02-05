@@ -44,10 +44,6 @@ function fullDecrypt(encryptedData, encryptedKey, privateKey) {
 
 }
 
-function uInt8ArrayToByteArray(intArray) {
-    
-}
-
 /**
  * Encrypts data with a public EC key.
  * Uses SJCL.
@@ -93,8 +89,12 @@ function decryptAES(encrypted, key) {
  * @returns {string}
  */
 function generateSymmetricKey() {
-    // TODO: Generate cryptographically secure random bytes
-    return "unsafekey";
+    
+    var salt = CryptoJS.lib.WordArray.random(128/8);
+    var password = CryptoJS.lib.WordArray.random(128/8);
+
+    return CryptoJS.PBKDF2(password, salt, { keySize: 512/32, iterations: 1 }).toString();
+
 }
 
 /**
