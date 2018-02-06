@@ -22,7 +22,7 @@
             opacity: 0.5;
         }
 
-        @media (max-width: 750px) {
+        @media (max-width: 500px) {
 
             /* Mobile tweaks */
             .item {

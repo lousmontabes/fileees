@@ -118,8 +118,8 @@ if (!isset ($_GET['folder'])) {
 
             <div class="preview">
                 <div class="previewContent">
-                    <img src="img/fileicon.svg" id="fileicon">
-                    <div class="extension">Encrypting...</div>
+                    <img src="img/fileicon.svg" class="fileicon">
+                    <div class="extension"></div>
                 </div>
             </div>
 
@@ -129,7 +129,7 @@ if (!isset ($_GET['folder'])) {
             </div>
 
         </div>
-        <div class="name">Uploading...</div>
+        <div class="name">Saving...</div>
     </div>
 </div>
 

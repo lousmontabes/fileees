@@ -49,11 +49,6 @@ if (empty($files)) {
     foreach ($files as $file) {
         ?>
 
-        <form id="downloadform<?php echo $file['id'] ?>" action="./retrieve_file.php" method="post" style="display: none">
-            <input type="hidden" name="id" value="<?php echo $file['id'] ?>">
-            <input type="hidden" name="hash" value="<?php echo $file['hash'] ?>">
-        </form>
-
         <div class="item" id="item<?php echo $i ?>" onclick="retrieveFile(<?php echo $file['id'] ?>, '<?php echo $file['hash'] ?>')">
             <div class="view jpg">
 
