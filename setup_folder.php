@@ -37,6 +37,7 @@
                 margin-top: 10px;
                 margin-bottom: 0;
             }
+
         }
 
         #curtain {
@@ -51,12 +52,61 @@
             z-index: 1000;
         }
 
+        .keyurl {
+            transition: .3s;
+            margin: .9em 0;
+            padding: .1em 0;
+            color: #11998e;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #keyurlFade {
+            transition: .3s;
+            width: 100%;
+            height: 1.5em;
+            position: absolute;
+            left: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            cursor: pointer;
+            color: #11998e;
+            font-weight: 500;
+        }
+
+        #keyurlFade:hover {
+            opacity: 1;
+        }
+
+        #keyurlFade:active #keyurlFadeText {
+            transform: scale(.9);
+        }
+
+        #keyurlFadeText {
+            transition: .2s;
+        }
+
+        .small {
+            font-size: 16px;
+            max-width: 100%;
+        }
+
+        .emptystate h2 {
+            margin-top: 0;
+        }
+
     </style>
 
 </head>
 <body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 <script src="libraries/crypto/aes.js"></script>
 <script src="libraries/crypto/pbkdf2.js"></script>
 <script src="libraries/crypto/ecc-min.js"></script>
@@ -70,12 +120,26 @@
     </div>
 </div>
 
-<div id="ajax">
+<div id="keymessage" style="display:none">
+    <h2>This is your unique download link:</h2>
+    <div class="clipboard" id="keyurlFade" data-clipboard-text="">
+        <div id="keyurlFadeText" style="border-bottom:2px solid #11998e; display:inline-block;">Copy</div>
+    </div>
+    <div class="keyurl" id="keyurl"></div>
+    Only share this link with people you want to be able to download files from this folder.<br>
+    <b>This is link can not be retrieved if lost</b> - make sure to keep hold of it!<br>
+    <br>
+    Drag and drop to upload something amazing!<br>
+    <span style="font-size:12px">This message will only be shown once</span>
+</div>
 
+<div id="ajax">
+    <!-- This will be replaced by folder html -->
 </div>
 
 <script>
 
+    var clipboard = new Clipboard('.clipboard');
     var keypair = generateKeypair();
 
     $.ajax({
@@ -90,7 +154,15 @@
         if (json.success) {
 
             // Folder was created successfully
-            // Retrieve folder data and perform AJAX
+
+            // Generate key url to display to user
+            var keyurl = "filee.es/&" + json.token + "#" + keypair.private;
+            $("#keyurlFade").attr("data-clipboard-text", keyurl);
+            $("#keyurl").html(keyurl);
+
+            var keymessage = $("#keymessage").html();
+
+            // Retrieve folder html from folder data and perform AJAX
 
             $.ajax({
                 type: 'GET',
@@ -98,9 +170,12 @@
                 data: {folder: json.token}
 
             }).done(function(data) {
-                window.history.pushState("", "Folder", "folder.php#" + keypair.private);
+                window.history.replaceState("", json.name + " on Filee.es", "folder.php?folder=" + json.token + "#" + keypair.private);
                 $('head title').text(json.name + ' on Filee.es');
                 $("#ajax").html(data);
+                $("#emptymessage").html(keymessage);
+                $("#keymessage").html("");
+                $("#emptymessage").addClass("small");
                 $("#curtain").addClass("bounceOutUp");
 
             });
@@ -114,6 +189,12 @@
 
         }
 
+    });
+
+    clipboard.on('success', function(e) {
+        $("#keyurlFade").css("opacity", 1);
+        $("#keyurlFadeText").css("border-bottom", "none");
+        $("#keyurlFadeText").html("Copied to clipboard <img src='./img/check.svg' height='14'>");
     });
 
 </script>

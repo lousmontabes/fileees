@@ -36,7 +36,7 @@ if (empty($files)) {
 
         <div class="centerwrap">
 
-            <div>There's nothing here. Drag and drop to upload something amazing!</div>
+            <div id="emptymessage">There's nothing here. Drag and drop to upload something amazing!</div>
 
         </div>
 

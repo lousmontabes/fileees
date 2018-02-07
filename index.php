@@ -34,7 +34,7 @@ $color = getRandomUiGradient()[0];
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, user-scalable=no">
 
-    <title>fileees</title>
+    <title>Filee.es</title>
 
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
