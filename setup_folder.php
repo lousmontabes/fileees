@@ -127,7 +127,7 @@
     </div>
     <div class="keyurl" id="keyurl"></div>
     Only share this link with people you want to be able to download files from this folder.<br>
-    <b>This is link can not be retrieved if lost</b> - make sure to keep hold of it!<br>
+    <b>This link can not be retrieved if lost</b> - make sure to keep hold of it!<br>
     <br>
     Drag and drop to upload something amazing!<br>
     <span style="font-size:12px">This message will only be shown once</span>
