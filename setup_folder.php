@@ -130,7 +130,7 @@
     <b>This link can not be retrieved if lost</b> - make sure to keep hold of it!<br>
     <br>
     Drag and drop to upload something amazing!<br>
-    <span style="font-size:12px">This message will only be shown once</span>
+    <span style="font-size:12px"><i>This message will only be shown once</i></span>
 </div>
 
 <div id="ajax">

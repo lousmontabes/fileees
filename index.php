@@ -1,30 +1,18 @@
 <?php
 
-$phrases = array("Welcome to your stuff",
-                 "This is your warehouse",
-                 "Can I save anything for you?",
-                 "Let me hold that for you",
-                 "I'll take this from here!",
-                 "Of course I can keep a secret",
-                 "Need a hand?",
-                 "Stop mailing files to yourself");
-
-$phrase = $phrases[array_rand($phrases)];
-
-$colors = array("#636fa4", "#23c086", "#3494e6", "#ec6ead");
-$color = $colors[array_rand($colors)];
-
-function getRandomUiGradient() {
-    $gradientsJson = file_get_contents("backend/gradients.json");
-    $uiGradients = json_decode($gradientsJson);
-
-    $gradient = $uiGradients[array_rand($uiGradients)];
-    $color = $gradient->colors;
-
-    return $color;
+function getRandomWelcomePhrase() {
+    $phrases = file("backend/welcome_phrases.txt");
+    return $phrases[array_rand($phrases)];
 }
 
-$color = getRandomUiGradient()[0];
+$phrase = getRandomWelcomePhrase();
+
+function getRandomColor() {
+    $colors = file("backend/colors.txt");
+    return $colors[array_rand($colors)];
+}
+
+$color = getRandomColor();
 
 ?>
 

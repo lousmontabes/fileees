@@ -45,9 +45,7 @@ if ($_POST['hash'] == $file['hash']) {
     echo $decrypted;
 
 } else {
-
-    echo "Incorrect credentials";
-
+    // Incorrect credentials
 }
 
 ?>

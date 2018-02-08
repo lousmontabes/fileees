@@ -31,7 +31,7 @@ html, body {
 .button {
     transition: 0.3s;
     padding: 2em;
-    font-family: open sans;
+    font-family: "Open Sans";
     text-align: center;
     border-radius: 6px;
     font-weight: 400;
@@ -238,7 +238,8 @@ form {
 .grid {
     transition: 0.3s;
     border-radius: 4px;
-    padding-bottom: 60px;
+    margin-top: 1em;
+    margin-bottom: 4em;
 }
 
 .item {
