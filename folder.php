@@ -2,32 +2,46 @@
 
 require_once("./backend/connection.php");
 
+function returnToIndex($error = false) {
+    if ($error) $suffix = "#error";
+    else $suffix = "";
+    header("Location: index.php" . $suffix);
+}
+
 if (!isset ($_GET['folder'])) {
+
     // ERROR: The 'folder' GET parameter is not set.
-
-    $query = array(
-        'source' => 'error'
-    );
-
     // Return to homepage
-    header("Location: index.php?" . http_build_query($query));
+    returnToIndex(true);
 
 } else {
 
     $folderToken = mysqli_real_escape_string($con, $_GET['folder']);
-
     $result = mysqli_query($con, "SELECT * FROM folders WHERE token = '{$folderToken}'");
-    $row = mysqli_fetch_array($result);
 
-    $folderId = $row['id'];
-    $folderName = $row['name'];
-    $publickey = preg_replace( "/\r|\n/", "", $row['public_key']);
+    if (mysqli_num_rows($result) > 0) {
 
-    $files = [];
+        // A folder with the specified token was found
 
-    $result = mysqli_query($con, "SELECT * FROM files WHERE folder = '{$folderId}'");
-    while ($row = mysqli_fetch_array($result)) {
-        array_push($files, $row);
+        $row = mysqli_fetch_array($result);
+
+        $folderId = $row['id'];
+        $folderName = $row['name'];
+        $publickey = preg_replace( "/\r|\n/", "", $row['public_key']);
+
+        $files = [];
+
+        $result = mysqli_query($con, "SELECT * FROM files WHERE folder = '{$folderId}'");
+        while ($row = mysqli_fetch_array($result)) {
+            array_push($files, $row);
+        }
+
+    } else {
+
+        // Folder with specified could not be found
+        // Return to homepage
+        returnToIndex(true);
+
     }
 
 }

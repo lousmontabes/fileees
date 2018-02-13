@@ -52,12 +52,28 @@ $color = getRandomColor();
             background: <?php echo $color ?>;
         }
 
+        #errorBanner {
+            transition: .5s;
+            transition-delay: 1s;
+            display: block;
+            opacity: 1;
+            z-index: 200;
+            padding: .7em;
+            background: red;
+        }
+
     </style>
 
 </head>
 <body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<div class="banner" id="errorBanner">
+    <div class="bannerWrap">
+        The specified folder could not be found.
+    </div>
+</div>
 
 <div class="banner">
     <div class="bannerWrap">
@@ -87,6 +103,11 @@ $color = getRandomColor();
     var ampersandDiv = $("#ampersandIcon");
     var urlDiv = $("#urlIcon");
     var goDiv = $("#goIcon");
+    var errorBannerDiv = $("#errorBanner");
+    var error = (getHashFromUrl() == "error");
+
+    if (error) showErrorBanner();
+    else hideErrorBanner();
 
     tokenDiv.keypress(function(e) {
         if (e.which == 13) {
@@ -134,6 +155,23 @@ $color = getRandomColor();
 
     function goToFolder() {
         window.location.href = "folder.php?folder=" + tokenDiv.html().replace(/\s+/g, '');
+    }
+
+    function getHashFromUrl() {
+        return location.hash.replace('#', '');
+    }
+
+    function removeHash () {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+
+    function showErrorBanner() {
+        setTimeout('errorBannerDiv.css("top", "-100px")', 1);
+        removeHash();
+    }
+
+    function hideErrorBanner() {
+        errorBannerDiv.css("display", "none");
     }
 
 
