@@ -432,8 +432,9 @@ if (!isset ($_GET['folder'])) {
      * Get version data from server for a specified ID and hash.
      * @param id    ID of the version to retrieve
      * @param hash  Hash of the version to retrieve
+     * @param name  Name of the file the version belongs to
      */
-    function retrieveVersion(id, hash) {
+    function retrieveVersion(id, hash, name) {
 
         if (privateKey == "") {
 
@@ -465,7 +466,7 @@ if (!isset ($_GET['folder'])) {
                     var bytes = base64ToArrayBuffer(decrypted);
 
                     // Download decoded file onto user's device.
-                    saveFile("version.txt", bytes);
+                    saveFile(name, bytes);
 
                 } catch (ex) {
 
@@ -559,11 +560,10 @@ if (!isset ($_GET['folder'])) {
        e.stopPropagation();
     });
 
-    $(".more-info").click ( function(e) {
-        var id = $(this).attr ("fileid");
+    function moreInfoClicked(e, id) {
         showFileInfo(id);
         e.stopPropagation();
-    });
+    }
 
 </script>
 

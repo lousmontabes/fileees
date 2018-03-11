@@ -15,16 +15,19 @@ $file = mysqli_fetch_array($result);
 
 ?>
 
+<div class="white-fade top"></div>
+
 <div class="versions-view">
 
     <div class="name"><?php echo $file['name'] ?></div>
 
 <table class="versions">
     <tr>
-        <th>Version</th>
+        <th>#</th>
         <th>Date</th>
         <th>Size</th>
         <th>Hash</th>
+        <th><img src="./img/download.svg"></th>
     </tr>
 <?php
 
@@ -63,7 +66,7 @@ while ($version = mysqli_fetch_array($result)) {
         <td class="version-property size">
             <?php
 
-            if ($file['size'] > 1000000) {
+            if ($version['size'] > 1000000) {
                 echo round($version['size'] / 1000000, 2) . " MB";
             } else {
                 echo round($version['size'] / 1000, 2) . " KB";
@@ -74,7 +77,7 @@ while ($version = mysqli_fetch_array($result)) {
         <td class="version-property hash">
             <?php echo $version['hash'] ?>
         </td>
-        <td class="version-property download" onclick="retrieveVersion(<?php echo $version['id'] ?>, '<?php echo $version['hash'] ?>')">
+        <td class="version-property download" onclick="retrieveVersion(<?php echo $version['id'] ?>, '<?php echo $version['hash'] ?>', '<?php echo $file['name'] ?>')">
             Download
         </td>
     </tr>
@@ -89,3 +92,5 @@ while ($version = mysqli_fetch_array($result)) {
 </table>
 
 </div>
+
+<div class="white-fade bottom"></div>

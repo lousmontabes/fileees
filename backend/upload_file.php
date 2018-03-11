@@ -68,8 +68,6 @@ try {
         // add uploaded item to database as a version of said file
         if ($fileExists) {
 
-            echo "Uploading as version\n";
-
             // Add to versions table
             $result = mysqli_query($con, "INSERT INTO `versions`(`file_id`, `size`, `hash`, `skey`) 
                                 VALUES ({$originalId}, {$size}, '{$hash}', '{$key}')");
@@ -77,9 +75,18 @@ try {
 
         } else {
 
+            echo "Creating new file\n";
+
             // Add to files table
-            mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `size`, `uploader`, `folder`, `hash`, `skey`, `iv`) 
-                                VALUES ('{$name}',0,0,'{$extension}', {$size}, 0, {$folderId}, '{$hash}', '{$key}', '')");
+            mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `uploader`, `folder`) 
+                                VALUES ('{$name}', 0, 0, '{$extension}', 0, {$folderId})");
+
+            $originalId = mysqli_insert_id($con);
+            echo $originalId;
+
+            // Add to versions table
+            $result = mysqli_query($con, "INSERT INTO `versions`(`file_id`, `size`, `hash`, `skey`) 
+                                VALUES ({$originalId}, {$size}, '{$hash}', '{$key}')");
 
         }
 

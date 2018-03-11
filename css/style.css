@@ -442,6 +442,7 @@ form {
 
 .versions-view .name {
     font-family: League Spartan;
+    text-align: center;
     font-size: 32px;
     margin: .5em 0;
 }
@@ -467,6 +468,7 @@ form {
     border-radius: 4px;
     transform: scale(0.9);
     opacity: 0;
+    max-height: 430px;
 }
 
 .blackout.displaying {
@@ -479,7 +481,21 @@ form {
 }
 
 .versions-view {
-    margin: 1.5em;
+    padding: 1.5em;
+    max-height: 350px;
+    overflow-y: scroll;
+}
+
+.versions {
+    margin-bottom: 1em;
+}
+
+.versions th {
+    font-weight: 400;
+}
+
+.versions td {
+    font-weight: 100;
 }
 
 .versions td, th {
@@ -491,16 +507,21 @@ form {
    transition: .2s;
 }
 
+.versions img {
+    width: 1em;
+}
+
 .versions tr:hover {
     color: darkgray;
 }
 
 .version-property.id {
     text-align: center;
+    color: gray;
 }
 
 .version-property.download {
-    transition: .2s;
+    transition: .1s;
     cursor: pointer;
     color: #23c086;
 }
@@ -511,4 +532,22 @@ form {
 
 .version-property.download:active {
     transform: scale(.9);
+}
+
+.white-fade {
+    position: fixed;
+    width: 100%;
+    height: 50px;
+}
+
+.white-fade.bottom {
+    background: -webkit-linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+    bottom: 0;
+}
+
+.white-fade.top {
+    background: -webkit-linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
+    background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
+    top: 0;
 }

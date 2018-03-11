@@ -17,7 +17,7 @@ if (!isset($files)) {
 
         $files = [];
 
-        $result = mysqli_query($con, "SELECT `id`, `name`, `type`, `format`, `extension`, `size`, `uploader`, `date`, `folder`, `hash` FROM files WHERE folder = '$folderId'");
+        $result = mysqli_query($con, "SELECT `id`, `name`, `type`, `format`, `extension`, `uploader`, `folder` FROM files WHERE folder = '$folderId'");
         while ($row = mysqli_fetch_array($result)) {
             array_push($files, $row);
         }
@@ -47,9 +47,14 @@ if (empty($files)) {
 } else {
 
     foreach ($files as $file) {
+
+        // Retrieve last version of the file
+        $result = mysqli_query($con, "SELECT * FROM versions WHERE file_id = {$file['id']} ORDER BY id DESC LIMIT 1");
+        $version = mysqli_fetch_array($result);
+
         ?>
 
-        <div class="item" id="item<?php echo $i ?>" onclick="retrieveFile(<?php echo $file['id'] ?>, '<?php echo $file['hash'] ?>')">
+        <div class="item" id="item<?php echo $i ?>" onclick="retrieveVersion(<?php echo $version['id'] ?>, '<?php echo $version['hash'] ?>', '<?php echo $file['name']?>')">
             <div class="view jpg">
 
                 <div class="preview">
@@ -65,10 +70,10 @@ if (empty($files)) {
                         <div class="filesize">
                         <?php
 
-                        if ($file['size'] > 1000000) {
-                            echo round($file['size'] / 1000000, 2) . " MB";
+                        if ($version['size'] > 1000000) {
+                            echo round($version['size'] / 1000000, 2) . " MB";
                         } else {
-                            echo round($file['size'] / 1000, 2) . " KB";
+                            echo round($version['size'] / 1000, 2) . " KB";
                         }
 
                         ?>
@@ -80,7 +85,7 @@ if (empty($files)) {
                         // TODO: Fix this timezone mess.
 
                         $timezone = new DateTimeZone('Europe/London');
-                        $date = DateTime::createFromFormat("Y-m-d H:i:s", $file['date'], $timezone);
+                        $date = DateTime::createFromFormat("Y-m-d H:i:s", $version['date'], $timezone);
                         $date->add(DateInterval::createFromDateString("+2 hours"));
 
                         if ($date->getTimestamp() > strtotime('-1 day')) {
@@ -98,7 +103,7 @@ if (empty($files)) {
                         ?>
                         </div>
 
-                        <div class="more-info" fileid="<?php echo $file['id'] ?>">Show all versions</div>
+                        <div class="more-info" onclick="moreInfoClicked(event, <?php echo $file['id'] ?>)">Show all versions</div>
 
                     </div>
                 </div>
