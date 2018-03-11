@@ -540,6 +540,7 @@ if (!isset ($_GET['folder'])) {
     function showFileInfo(id) {
 
         moreInfoWrapDiv.addClass("displaying");
+        setTimeout('moreInfoWrapDiv.css("opacity", 1)', 1);
         setTimeout('moreInfoDiv.addClass("displaying")', 1);
 
         $.post("modules/file-info.php", {id: id} ).done(function(response) {
@@ -550,9 +551,11 @@ if (!isset ($_GET['folder'])) {
 
     function hideFileInfo() {
 
-        moreInfoWrapDiv.removeClass("displaying");
+        moreInfoWrapDiv.css("opacity", 0);
+        setTimeout('moreInfoWrapDiv.removeClass("displaying")', 200);
         moreInfoDiv.removeClass("displaying");
-        moreInfoDiv.html("Loading...");
+
+        setTimeout('moreInfoDiv.html("Loading...")', 200);
 
     }
 

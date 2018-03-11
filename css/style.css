@@ -457,17 +457,18 @@ form {
     display: none;
     align-content: center;
     align-items: center;
+    opacity: 0;
+    transition: .2s;
 }
 
 .hover-view {
-    transition: .3s;
+    transition: .2s;
     align-self: center;
     margin-left: auto;
     margin-right: auto;
     background: white;
     border-radius: 4px;
     transform: scale(0.9);
-    opacity: 0;
     max-height: 430px;
 }
 
@@ -477,7 +478,6 @@ form {
 
 .hover-view.displaying {
     transform: scale(1);
-    opacity: 1;
 }
 
 .versions-view {
