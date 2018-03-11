@@ -556,11 +556,11 @@ if (!isset ($_GET['folder'])) {
     function showFileInfo(id) {
 
         moreInfoWrapDiv.addClass("displaying");
-        setTimeout('moreInfoWrapDiv.css("opacity", 1)', 1);
-        setTimeout('moreInfoDiv.addClass("displaying")', 1);
 
         $.post("modules/file-info.php", {id: id} ).done(function(response) {
             moreInfoDiv.html(response);
+            moreInfoWrapDiv.css("opacity", 1);
+            moreInfoDiv.addClass("displaying");
         });
 
     }
