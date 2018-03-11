@@ -402,6 +402,17 @@ form {
     font-weight: 400;
 }
 
+.more-info {
+    transition: .2s;
+    font-size: 13px;
+    margin: .5em 0;
+    color: #23c086;
+}
+
+.more-info:hover {
+    opacity: .5;
+}
+
 .dragging {
     opacity: 1;
     background: rgb(250, 250, 250);
@@ -427,4 +438,77 @@ form {
 
 .subtitle:hover{
     width: 35em;
+}
+
+.versions-view .name {
+    font-family: League Spartan;
+    font-size: 32px;
+    margin: .5em 0;
+}
+
+.blackout {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    display: none;
+    align-content: center;
+    align-items: center;
+}
+
+.hover-view {
+    transition: .3s;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    background: white;
+    border-radius: 4px;
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+.blackout.displaying {
+    display: flex;
+}
+
+.hover-view.displaying {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.versions-view {
+    margin: 1.5em;
+}
+
+.versions td, th {
+    padding: .5em;
+    font-family: Europa, sans-serif;
+}
+
+.versions tr {
+   transition: .2s;
+}
+
+.versions tr:hover {
+    color: darkgray;
+}
+
+.version-property.id {
+    text-align: center;
+}
+
+.version-property.download {
+    transition: .2s;
+    cursor: pointer;
+    color: #23c086;
+}
+
+.version-property.download:hover {
+    transform: scale(1.1);
+}
+
+.version-property.download:active {
+    transform: scale(.9);
 }

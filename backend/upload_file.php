@@ -18,6 +18,16 @@ $size = $_POST['size'];
 $filebytes = $_POST['bytes'];
 $key = $_POST['key'];
 
+// Check if a file with the same name already exists in folder
+$result = mysqli_query($con, "SELECT id FROM files WHERE folder={$folderId} AND name='{$name}' LIMIT 1");
+$fileExists = (mysqli_num_rows($result) > 0);
+
+// In case it exists, retrieve its id
+if ($fileExists) {
+    $originalId = mysqli_fetch_row($result)[0];
+    echo $originalId;
+}
+
 $client = S3Client::factory(array(
     'profile' => 'files-app-user',
     'region' => 'eu-west-2',
@@ -47,18 +57,31 @@ try {
         $result = $client->putObject(array(
             'Bucket' => $bucket,
             'Key'    => $keyname,
-            'Body'   => $_POST['bytes'],
+            'Body'   => $filebytes,
             'ACL'    => 'public-read'
         ));
 
         // Print the URL to the object.
         echo $result['ObjectURL'] . "\n";
 
-        // Add row to database
-        mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `size`, `uploader`, `folder`, `hash`, `skey`, `iv`) 
-                    VALUES ('{$name}',0,0,'{$extension}', {$size}, 0, {$folderId}, '{$hash}', '{$key}', '')");
+        // If a file with the same name already existed in this folder,
+        // add uploaded item to database as a version of said file
+        if ($fileExists) {
 
-        $id = mysqli_insert_id($con);
+            echo "Uploading as version\n";
+
+            // Add to versions table
+            $result = mysqli_query($con, "INSERT INTO `versions`(`file_id`, `size`, `hash`, `skey`) 
+                                VALUES ({$originalId}, {$size}, '{$hash}', '{$key}')");
+
+
+        } else {
+
+            // Add to files table
+            mysqli_query($con, "INSERT INTO `files`(`name`, `type`, `format`, `extension`, `size`, `uploader`, `folder`, `hash`, `skey`, `iv`) 
+                                VALUES ('{$name}',0,0,'{$extension}', {$size}, 0, {$folderId}, '{$hash}', '{$key}', '')");
+
+        }
 
     } catch (S3Exception $e) {
         echo $e->getMessage() . "\n";

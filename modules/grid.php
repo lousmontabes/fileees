@@ -61,6 +61,7 @@ if (empty($files)) {
 
                 <div class="overlay">
                     <div class="overlayContent">
+
                         <div class="filesize">
                         <?php
 
@@ -73,6 +74,7 @@ if (empty($files)) {
                         ?>
                         </div>
 
+                        <div class="date">
                         <?php
 
                         // TODO: Fix this timezone mess.
@@ -94,6 +96,10 @@ if (empty($files)) {
                         }
 
                         ?>
+                        </div>
+
+                        <div class="more-info" fileid="<?php echo $file['id'] ?>">Show all versions</div>
+
                     </div>
                 </div>
 

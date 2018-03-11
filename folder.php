@@ -95,6 +95,7 @@ if (!isset ($_GET['folder'])) {
                 padding-bottom: 0;
             }
         }
+
     </style>
 
 </head>
@@ -124,6 +125,11 @@ if (!isset ($_GET['folder'])) {
         <?php include ("modules/grid.php") ?>
     </div>
 
+</div>
+
+<div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">
+    <div class="hover-view" id="moreInfoView">
+    </div>
 </div>
 
 <div id="dummyItem">
@@ -160,6 +166,8 @@ if (!isset ($_GET['folder'])) {
     var lastItem = $("#item<?php echo $i - 1 ?>");
     var dummyItem = $("#dummyItem");
     var encryptedMessageDiv = $("#encryptedMessage");
+    var moreInfoDiv = $("#moreInfoView");
+    var moreInfoWrapDiv = $("#moreInfoWrap");
     var encryptedMessageHtml = encryptedMessageDiv.html();
     var publicKey = "<?php echo $publickey ?>";
     var privateKey = getPrivateKeyFromUrl();
@@ -420,6 +428,57 @@ if (!isset ($_GET['folder'])) {
 
     }
 
+    /**
+     * Get version data from server for a specified ID and hash.
+     * @param id    ID of the version to retrieve
+     * @param hash  Hash of the version to retrieve
+     */
+    function retrieveVersion(id, hash) {
+
+        if (privateKey == "") {
+
+            // No private key has been specified: file cannot be decrypted.
+            alert("Couldn't decrypt: no key provided.");
+
+        } else {
+
+            // Make AJAX call to retrieve encrypted file data.
+            $.ajax({
+                type: 'POST',
+                url: 'backend/retrieve_version.php',
+                data: {id: id, hash: hash}
+            }).done(function(response) {
+
+                console.log(response);
+
+                var json = jQuery.parseJSON(response);
+                var data = json.data;
+                var key = json.key;
+
+                // Attempt to decrypt key & file with specified private key.
+                try {
+
+                    // Decrypt file. Throws exception if decryption isn't possible.
+                    var decrypted = fullDecrypt(data, key, privateKey);
+
+                    // Decode base64 encoded string into byte ArrayBuffer.
+                    var bytes = base64ToArrayBuffer(decrypted);
+
+                    // Download decoded file onto user's device.
+                    saveFile("version.txt", bytes);
+
+                } catch (ex) {
+
+                    // File couldn't be decrypted using the provided key.
+                    alert("Couldn't decrypt: incorrect key.");
+
+                }
+
+            });
+        }
+
+    }
+
     function updateTitle(newName) {
         $('head title', window.parent.document).text(newName + ' on Fileees');
     }
@@ -476,6 +535,35 @@ if (!isset ($_GET['folder'])) {
         link.download = fileName;
         link.click();
     }
+
+    function showFileInfo(id) {
+
+        moreInfoWrapDiv.addClass("displaying");
+        setTimeout('moreInfoDiv.addClass("displaying")', 1);
+
+        $.post("modules/file-info.php", {id: id} ).done(function(response) {
+            moreInfoDiv.html(response);
+        });
+
+    }
+
+    function hideFileInfo() {
+
+        moreInfoWrapDiv.removeClass("displaying");
+        moreInfoDiv.removeClass("displaying");
+        moreInfoDiv.html("Loading...");
+
+    }
+
+    moreInfoDiv.click(function(e){
+       e.stopPropagation();
+    });
+
+    $(".more-info").click ( function(e) {
+        var id = $(this).attr ("fileid");
+        showFileInfo(id);
+        e.stopPropagation();
+    });
 
 </script>
 
