@@ -21,7 +21,9 @@ if (!isset($files)) {
         while ($row = mysqli_fetch_array($result)) {
             array_push($files, $row);
         }
-        
+
+        $filenames = array_column($files, 'name');
+
     }
 
 }
@@ -121,3 +123,15 @@ if (empty($files)) {
 }
 
 ?>
+
+<script>
+
+    var filenames;
+
+    function updateFilenames(newFilenames) {
+        filenames = newFilenames;
+    }
+
+    updateFilenames(<?php echo json_encode($filenames) ?>);
+    
+</script>

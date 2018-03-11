@@ -36,6 +36,8 @@ if (!isset ($_GET['folder'])) {
             array_push($files, $row);
         }
 
+        $filenames = array_column($files, 'name');
+
     } else {
 
         // Folder with specified could not be found
@@ -171,6 +173,7 @@ if (!isset ($_GET['folder'])) {
     var encryptedMessageHtml = encryptedMessageDiv.html();
     var publicKey = "<?php echo $publickey ?>";
     var privateKey = getPrivateKeyFromUrl();
+    var filenames = <?php echo json_encode($filenames) ?>;
 
     $(window).scroll(function() {
 
@@ -289,8 +292,21 @@ if (!isset ($_GET['folder'])) {
         // If no files had been added (empty-state screen was showing) hide empty-state screen.
         if (nextItemId == 0) $("#emptystate").css("display", "none");
 
-        // Add dummy item represending new file.
-        addDummyItem();
+        // Check if a file with the same name exists
+        var index = $.inArray(file.name, filenames);
+
+        if (index != -1) {
+
+            // Display response showing that file is updating
+            $("#item" + index + " .name").html("Saving...");
+
+        } else {
+
+            // Add dummy item represending new file.
+            addDummyItem();
+
+        }
+
     });
 
     dropzone.on("success", function(file, response) {
