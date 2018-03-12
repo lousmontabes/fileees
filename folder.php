@@ -62,6 +62,7 @@ if (!isset ($_GET['folder'])) {
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     
     <link href="css/style.css" rel="stylesheet" />
+    <link href="css/animations.css" rel="stylesheet" />
     <link href="libraries/animate.css" rel="stylesheet" />
 
     <style>
@@ -135,7 +136,7 @@ if (!isset ($_GET['folder'])) {
 </div>
 
 <div id="dummyItem">
-    <div class="animated item" id="lastItem">
+    <div class="item" id="lastItem">
         <div class="view jpg">
 
             <div class="preview">
@@ -274,11 +275,8 @@ if (!isset ($_GET['folder'])) {
         }).done(function(response) {
             console.log(response);
 
-            $.post("modules/grid.php", {folder: folderId, key: privateKey} ).done(function(response) {
-                mainGridDiv.removeClass("dragging");
-                updateMainGrid(response);
-            });
-
+            var index = $.inArray(name, filenames);
+            updateGrid(index);
         });
 
     }
@@ -286,7 +284,6 @@ if (!isset ($_GET['folder'])) {
     /**
      * Dropzone events
      */
-
     dropzone.on("addedfile", function(file) {
 
         // If no files had been added (empty-state screen was showing) hide empty-state screen.
@@ -297,12 +294,15 @@ if (!isset ($_GET['folder'])) {
 
         if (index != -1) {
 
-            // Display response showing that file is updating
-            $("#item" + index + " .name").html("Saving...");
+            var updatedItemDiv = $("#item" + index);
+            var updatedItemNameDiv = $("#item" + index + " .name");
+
+            // Change UI to show that file is updating
+            updatedItemNameDiv.html("Saving...");
 
         } else {
 
-            // Add dummy item represending new file.
+            // Add dummy item representing new file.
             addDummyItem();
 
         }
@@ -328,10 +328,33 @@ if (!isset ($_GET['folder'])) {
     });
 
     /**
+     * Retrieves latest grid state from modules/grid.php asynchronously and replaces html
+     */
+    function updateGrid(newItemId = null) {
+
+        $.post("modules/grid.php", {folder: folderId, key: privateKey} ).done(function(response) {
+            mainGridDiv.removeClass("dragging");
+            replaceGridHtml(response);
+
+            if (newItemId != null) {
+
+                if (newItemId == -1) {
+                    console.log(nextItemId);
+                    $("#item" + (nextItemId - 1)).addClass("animation-jump");
+                } else {
+                    $("#item" + newItemId).addClass("animation-jump");
+                }
+
+            }
+
+        });
+    }
+
+    /**
      * Update grid area with specified html.
      * @param newHtml:  New html to display in grid area.
      */
-    function updateMainGrid(newHtml) {
+    function replaceGridHtml(newHtml) {
         mainGridDiv.html(newHtml);
     }
 
