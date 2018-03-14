@@ -211,6 +211,8 @@ if (!isset ($_GET['folder'])) {
                 // Encrypt base64-encoded string
                 var encrypted = encryptFile(arrayBuffer);
 
+                console.log("Encrypted");
+
                 // Make AJAX call to server script to upload the encrypted data
                 // and corresponding encrypted symmetric key onto server
                 uploadFile(file.name, arrayBuffer.byteLength, encrypted.data, encrypted.key);
