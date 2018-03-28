@@ -18,4 +18,4 @@ Anyone who knows your folder's token can see its contents, but in order to read 
 
 Without the decryption key, any data on there is as good as garbage.
 
-**That's it! Go to [filee.es](http://filee.es) to start sharing.**
+**That's it! Head over to [filee.es](http://filee.es) and start sharing.**
