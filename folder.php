@@ -343,8 +343,10 @@ if (!isset ($_GET['folder'])) {
                 if (newItemId == -1) {
                     console.log(nextItemId);
                     $("#item" + (nextItemId - 1)).addClass("animation-jump");
+                    setTimeout('$("#item" + (nextItemId - 1)).removeClass("animation-jump")', 1000);
                 } else {
                     $("#item" + newItemId).addClass("animation-jump");
+                    setTimeout('$("#item" + newItemId).removeClass("animation-jump")', 1000);
                 }
 
             }
