@@ -65,6 +65,14 @@ $color = getRandomColor();
             border-color: <?php echo $color ?>;
         }
 
+        .registerBenefitsMessage {
+            text-align: center;
+            font-family: Europa, sans-serif;
+            color: grey;
+            font-weight: 100;
+            margin: 1em 0;
+        }
+
         #errorBanner {
             transition: .5s;
             transition-delay: 1s;
@@ -104,10 +112,17 @@ $color = getRandomColor();
         <div class="title big"><?php echo $phrase ?></div>
         <a href="setup_folder.php?c=<?php echo substr($color, 1) ?>"><div class="button big">Create a folder</div></a>
 
-        <div style="text-align: center; color: <?php echo $color ?>">
-            <div class="register-login clickable" onclick="showLogin(true)">Log in</div>
-            |
-            <div class="register-login clickable" onclick="showLogin(false)">Sign up</div>
+
+        <div class="registerBenefitsMessage">
+
+            Register for one click access to your folders.
+
+            <div style="text-align: center; color: <?php echo $color ?>">
+                <div class="register-login clickable" onclick="showLogin(true)">Log in</div>
+                |
+                <div class="register-login clickable" onclick="showLogin(false)">Sign up</div>
+            </div>
+
         </div>
 
     </div>

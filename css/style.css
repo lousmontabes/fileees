@@ -598,8 +598,8 @@ form {
 .register-login {
     display: inline-block;
     text-align: center;
-    padding: 2em;
-    font-family: "Open Sans";
+    padding: 1em;
+    font-family: Europa, sans-serif;
     cursor: pointer;
 }
 
