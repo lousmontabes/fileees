@@ -52,6 +52,19 @@ $color = getRandomColor();
             background: <?php echo $color ?>;
         }
 
+        .register-login {
+            color: <?php echo $color ?>;
+        }
+
+        .form-input {
+            color: <?php echo $color ?>;
+        }
+
+        .form-button {
+            color: <?php echo $color ?>;
+            border-color: <?php echo $color ?>;
+        }
+
         #errorBanner {
             transition: .5s;
             transition-delay: 1s;
@@ -91,11 +104,22 @@ $color = getRandomColor();
         <div class="title big"><?php echo $phrase ?></div>
         <a href="setup_folder.php?c=<?php echo substr($color, 1) ?>"><div class="button big">Create a folder</div></a>
 
+        <div style="text-align: center; color: <?php echo $color ?>">
+            <div class="register-login clickable" onclick="showLogin(true)">Log in</div>
+            |
+            <div class="register-login clickable" onclick="showLogin(false)">Sign up</div>
+        </div>
+
     </div>
 
 </div>
 
 <?php include("modules/footer.php") ?>
+
+<div class="blackout" id="loginWrap" onclick="hideLogin()">
+    <div class="hover-view" id="loginView">
+    </div>
+</div>
 
 <script>
 
@@ -174,6 +198,41 @@ $color = getRandomColor();
         errorBannerDiv.css("display", "none");
     }
 
+    var loginView = $("#loginView");
+    var loginWrap = $("#loginWrap");
+
+    function showLogin(isLogin) {
+
+        loginWrap.addClass("displaying");
+        var source = "";
+
+        if (isLogin) {
+            source = "modules/login.php";
+        } else {
+            source = "modules/register.php";
+        }
+
+        $.ajax(source).done(function(response) {
+            loginView.html(response);
+            loginWrap.css("opacity", 1);
+            loginView.addClass("displaying");
+        });
+
+    }
+
+    function hideLogin() {
+
+        loginWrap.css("opacity", 0);
+        setTimeout('loginWrap.removeClass("displaying")', 200);
+        loginView.removeClass("displaying");
+
+        setTimeout('loginView.html("Loading...")', 200);
+
+    }
+
+    loginView.click(function(e){
+        e.stopPropagation();
+    });
 
 </script>
 
