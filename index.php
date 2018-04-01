@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 function getRandomWelcomePhrase() {
     $phrases = file("backend/welcome_phrases.txt");
     return $phrases[array_rand($phrases)];
