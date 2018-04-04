@@ -32,9 +32,13 @@ if (!password_verify($password, $row["password"])) {
 
 if ($proceed) {
 
+    // Generate PBKDF2 of user password with user salt
+    $pbkdf2 = hash_pbkdf2("sha512", $password, $row["salt"], 10000, 128);
+
     // Start PHP session
     session_start();
     $_SESSION["user_id"] = $row["id"];
+    $_SESSION["pbkdf2"] = $pbkdf2;
 
     $response = ["status" => "success", "error" => $errors];
     $json = json_encode($response);

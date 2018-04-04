@@ -75,6 +75,23 @@ $color = getRandomColor();
             margin: 1em 0;
         }
 
+        .folderPreview .url, .folderPreview .left:hover .title {
+            color: <?php echo $color ?>;
+        }
+
+        .folderPreview .right:hover {
+            transform: scale(1.1);
+            background: <?php echo $color ?>;
+        }
+
+        .folderPreview .right:active {
+            transform: scale(.85);
+        }
+
+        .logOutButton:hover {
+            background: <?php echo $color ?>;
+        }
+
         #errorBanner {
             transition: .5s;
             transition-delay: 1s;
@@ -92,7 +109,7 @@ $color = getRandomColor();
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<div class="banner" id="errorBanner">
+<div class="banner" id="errorBanner" style="display:none">
     <div class="bannerWrap">
         The specified folder could not be found.
     </div>
@@ -107,25 +124,22 @@ $color = getRandomColor();
     </div>
 </div>
 
-<div class="centerwrap">
+<div class="splashWrapper">
 
-    <div class="middle">
+    <div class="middle" id="splashZone">
 
         <div class="title big"><?php echo $phrase ?></div>
         <a href="setup_folder.php?c=<?php echo substr($color, 1) ?>"><div class="button big">Create a folder</div></a>
 
+    </div>
 
-        <div class="registerBenefitsMessage">
+</div>
 
-            Register for one click access to your folders.
+<div class="userWrapper">
 
-            <div style="text-align: center; color: <?php echo $color ?>">
-                <div class="register-login clickable" onclick="showLogin(true)">Log in</div>
-                |
-                <div class="register-login clickable" onclick="showLogin(false)">Sign up</div>
-            </div>
+    <div id="userZone">
 
-        </div>
+        <?php include("modules/user_zone.php") ?>
 
     </div>
 
@@ -207,6 +221,7 @@ $color = getRandomColor();
     }
 
     function showErrorBanner() {
+        errorBannerDiv.css("display", "block");
         setTimeout('errorBannerDiv.css("top", "-100px")', 1);
         removeHash();
     }

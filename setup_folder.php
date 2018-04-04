@@ -1,3 +1,22 @@
+<?php
+session_start();
+require_once("backend/connection.php");
+
+// If user is logged in and pbkdf2 of password is available,
+// store relation and encrypted private key in database.
+$loggedIn = isset($_SESSION['user_id']) && isset($_SESSION['pbkdf2']);
+
+if ($loggedIn) {
+
+    // Retrieve salt for current user
+    $result = mysqli_query($con, "SELECT salt FROM users WHERE id = {$_SESSION['user_id']}");
+    $row = mysqli_fetch_array($result);
+    $salt = $row['salt'];
+
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,6 +160,14 @@
 
     var clipboard = new Clipboard('.clipboard');
     var keypair = generateKeypair();
+    var loggedIn = false;
+    var pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
+
+    var encryptedPrivateKey = encryptAES(keypair.private, pbkdf2).toString();
+
+    <? if ($loggedIn) { ?>
+    loggedIn = true;
+    <? } ?>
 
     $.ajax({
         type: "POST",
@@ -155,6 +182,19 @@
 
             // Folder was created successfully
 
+            // If user is logged in, generate user-folder relation
+            if (loggedIn) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "backend/create_user_folder_relation.php",
+                    data: {token: json.token, encrypted_key: encryptedPrivateKey}
+                }).done(function(response) {
+                    console.log(response);
+                });
+
+            }
+
             // Generate key url to display to user
             var keyurl = "filee.es/&" + json.token + "#" + keypair.private;
             $("#keyurlFade").attr("data-clipboard-text", keyurl);
@@ -163,7 +203,6 @@
             var keymessage = $("#keymessage").html();
 
             // Retrieve folder html from folder data and perform AJAX
-
             $.ajax({
                 type: 'GET',
                 url: 'folder.php',

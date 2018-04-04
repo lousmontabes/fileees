@@ -105,3 +105,10 @@ function generateKeypair() {
     var keypair = ecc.generate(ecc.ENC_DEC);
     return {"public" : keypair.enc, "private" : keypair.dec};
 }
+
+/**
+ * Generates a PBKDF2 hash from the specified password and salt
+ */
+function generatePBKDF2(password, salt) {
+    return CryptoJS.PBKDF2(password, salt, {keySize: 512/32, iterations: 16000})
+}

@@ -11,7 +11,11 @@
         <input class="form-button button clickable" type="button" value="Log in" onclick="submitForm()">
     </form>
 
+    <div class="loginMessage" style="font-size:12px; color:grey">We use cookies to log you in - by pressing the button above we understand that you agree. <br><br> We do <b><u>not</u></b> use cookies to track your activity in any way.</b></div>
+
 </div>
+
+<script src="./libraries/crypto/encryption.js"></script>
 
 <script>
 

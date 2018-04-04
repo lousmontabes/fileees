@@ -136,6 +136,7 @@ form {
     border: 2px solid black;
     border-radius: 5px;
     font-size: 14px;
+    background: transparent;
 }
 
 .form-button:focus {
@@ -218,7 +219,8 @@ form {
     font-family: "Open Sans";
     font-weight: 100;
     font-size: 12px;
-    background: white;
+    background: -webkit-linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
 }
 
 .logo {
@@ -631,4 +633,92 @@ form {
     font-family: Europa, sans-serif;
     width: 15em;
     padding: 1.5em 1em;
+    margin: 0 auto;
+}
+
+.splashWrapper {
+    display: flex;
+    justify-content: center;
+    height: 50vh;
+}
+
+#splashZone {
+    margin: 0;
+    margin-top: auto;
+}
+
+.userWrapper {
+    width: 50em;
+    margin: 0 auto;
+}
+
+#userZone {
+    padding: 2em;
+}
+
+.userFolders {
+    margin: 0 3em;
+    border-radius: 2px;
+}
+
+.folderPreview {
+    position: relative;
+    transition: .2s;
+    padding: 1.5em;
+    height: 3em;
+}
+
+.folderPreview .title {
+    font-family: 'League Spartan';
+    font-size: 20px;
+}
+
+.folderPreview .url {
+    font-family: "Open Sans";
+}
+
+.folderPreview .left {
+    transition: .2s;
+    cursor: pointer;
+}
+
+.folderPreview .right {
+    cursor: pointer;
+    transition: .2s;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1.5em 0;
+    width: 3em;
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.folderPreview .left:active {
+    transform: scale(.95);
+}
+
+#emptyState {
+    padding:2em;
+}
+
+#emptyState .title {
+    font-family: "League Spartan";
+}
+
+#emptyState .content {
+    font-family: "Open Sans";
+}
+
+.logOutButton {
+    cursor: pointer;
+    float: right;
+    padding: .5em;
+    margin-right: 2em;
+}
+
+.logOutButton:hover {
+    color: white;
 }

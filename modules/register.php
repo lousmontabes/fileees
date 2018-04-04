@@ -14,6 +14,8 @@
 
     </form>
 
+    <div class="loginMessage" style="font-size:12px; color:grey">By registering you agree to our Terms & Conditions</div>
+
 </div>
 
 <script>

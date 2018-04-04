@@ -19,6 +19,9 @@ $password = mysqli_real_escape_string($con, filter_var($_POST["password"]));
 // Generate bcrypt salted hash of user password
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
+// Generate random salt for this specific user
+$salt = random_bytes(128);
+
 // Check if a user with the same email address already exists
 $result = mysqli_query($con, "SELECT id FROM users WHERE email='{$email}' LIMIT 1");
 $emailExists = (mysqli_num_rows($result) > 0);
@@ -46,8 +49,8 @@ if (!passwordMeetsCriteria($password)) {
 if ($proceed) {
 
     // Add row to database
-    mysqli_query($con, "INSERT INTO `users`(`name`, `email`, `password`) 
-                    VALUES ('{$name}', '{$email}', '{$passwordHash}')");
+    mysqli_query($con, "INSERT INTO `users`(`name`, `email`, `password`, `salt`) 
+                    VALUES ('{$name}', '{$email}', '{$passwordHash}', '{$salt}')");
 
     $response = ["status" => "success", "error" => $errors];
     $json = json_encode($response);
