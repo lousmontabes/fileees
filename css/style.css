@@ -605,6 +605,10 @@ form {
     cursor: pointer;
 }
 
+.register-login:hover {
+    color: white;
+}
+
 .clickable {
     cursor: pointer;
     transition: transform .2s;

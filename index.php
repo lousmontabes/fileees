@@ -58,6 +58,10 @@ $color = getRandomColor();
             color: <?php echo $color ?>;
         }
 
+        .register-login:hover {
+            background: <?php echo $color ?>;
+        }
+
         .form-input {
             color: <?php echo $color ?>;
         }

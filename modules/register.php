@@ -57,7 +57,9 @@
             var json = jQuery.parseJSON(response);
 
             if (json.status == "success") {
-                alert("Success");
+
+                window.location.replace("./");
+
             } else {
                 json.error.forEach(function(it){
                     alert(it);

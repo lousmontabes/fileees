@@ -6,6 +6,8 @@
  * Time: 12:05
  */
 
+$loggedIn = false;
+
 if (!isset($_SESSION['user_id'])) {
 
     // User is not logged in.
@@ -32,6 +34,8 @@ if (!isset($_SESSION['user_id'])) {
     // User is logged in
     // Return folder data to decrypt client-side
 
+    $loggedIn = true;
+
     ?>
 
     <div class="userFolders" id="userFolders">
@@ -44,7 +48,7 @@ if (!isset($_SESSION['user_id'])) {
 
     <div id="folderPreviewDummy" style="display: none">
         <div class="folderPreview">
-            
+
             <a id="link">
             <div class="left">
                 <div class="title"></div>
@@ -70,11 +74,18 @@ if (!isset($_SESSION['user_id'])) {
 <script src="./libraries/crypto/encryption.js"></script>
 <script>
 
-    var pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
+    var pbkdf2 = "";
+
+    <? if ($loggedIn) { ?>
+    pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
+    <? } ?>
+
     var folderPreviewDummy = $("#folderPreviewDummy");
     var clipboard = new Clipboard('.clipboard');
 
+    <? if ($loggedIn) { ?>
     retrieveUserFolders();
+    <? } ?>
 
     function retrieveUserFolders() {
 
@@ -84,8 +95,6 @@ if (!isset($_SESSION['user_id'])) {
 
             var key;
             folders = jQuery.parseJSON(response);
-
-            console.log(folders);
 
             if (folders.length > 0) {
 
@@ -107,7 +116,6 @@ if (!isset($_SESSION['user_id'])) {
 
     function addFolderPreview(name, token, key) {
 
-        console.log(name);
         folderPreviewDummy.find("a").attr("href", "./folder.php?folder=" + token + "#" + key);
         folderPreviewDummy.find(".title").html(name);
         folderPreviewDummy.find(".url").html("&" + token);

@@ -43,7 +43,7 @@ if (!emailMeetsCriteria($email)) {
 
 if (!passwordMeetsCriteria($password)) {
     $proceed = false;
-    array_push($errors, "Password must be at least 16 characters long");
+    array_push($errors, "Password must be at least 8 characters long");
 }
 
 if ($proceed) {
@@ -89,5 +89,5 @@ function emailMeetsCriteria($email) {
  * @return bool
  */
 function passwordMeetsCriteria($password) {
-    return strlen($password) > 16;
+    return strlen($password) > 8;
 }
