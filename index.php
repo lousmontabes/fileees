@@ -59,7 +59,7 @@ $color = getRandomColor();
         }
 
         .register-login:hover {
-            background: <?php echo $color ?>;
+            border-bottom: 1px solid <?php echo $color ?>;
         }
 
         .form-input {

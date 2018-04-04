@@ -598,15 +598,18 @@ form {
 }
 
 .register-login {
+    transition: .2s;
     display: inline-block;
     text-align: center;
-    padding: 1em;
+    padding: .5em;
+    margin: .5em;
     font-family: Europa, sans-serif;
     cursor: pointer;
+    border-bottom: 1px solid transparent;
 }
 
-.register-login:hover {
-    color: white;
+.register-login:active {
+    opacity: .5;
 }
 
 .clickable {

@@ -17,12 +17,12 @@ if (!isset($_SESSION['user_id'])) {
 
     <div class="registerBenefitsMessage">
 
-        Register for one click access to your folders.
+        Sign up for one click access to your folders:
 
         <div style="text-align: center; color: <?php echo $color ?>">
-            <div class="register-login clickable" onclick="showLogin(true)">Log in</div>
-            |
-            <div class="register-login clickable" onclick="showLogin(false)">Sign up</div>
+            <div class="register-login" onclick="showLogin(true)">Log in</div>
+            /
+            <div class="register-login" onclick="showLogin(false)">Sign up</div>
         </div>
 
     </div>
