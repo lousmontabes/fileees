@@ -27,8 +27,7 @@ if (!isset($_SESSION['user_id'])) {
 
     </div>
 
-    <?
-
+    <?php 
 } else {
 
     // User is logged in
@@ -63,8 +62,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <?
-
+    <?php 
 }
 
 ?>
@@ -76,16 +74,16 @@ if (!isset($_SESSION['user_id'])) {
 
     var pbkdf2 = "";
 
-    <? if ($loggedIn) { ?>
+    <?php if ($loggedIn) { ?>
     pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
-    <? } ?>
+    <?php } ?>
 
     var folderPreviewDummy = $("#folderPreviewDummy");
     var clipboard = new Clipboard('.clipboard');
 
-    <? if ($loggedIn) { ?>
+    <?php if ($loggedIn) { ?>
     retrieveUserFolders();
-    <? } ?>
+    <?php } ?>
 
     function retrieveUserFolders() {
 

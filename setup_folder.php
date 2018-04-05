@@ -165,9 +165,9 @@ if ($loggedIn) {
 
     var encryptedPrivateKey = encryptAES(keypair.private, pbkdf2).toString();
 
-    <? if ($loggedIn) { ?>
+    <?php if ($loggedIn) { ?>
     loggedIn = true;
-    <? } ?>
+    <?php } ?>
 
     $.ajax({
         type: "POST",
