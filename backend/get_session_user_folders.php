@@ -11,7 +11,7 @@ require_once("connection.php");
 session_start();
 $user_id = $_SESSION['user_id'];
 
-$query = "SELECT token, name, encrypted_key FROM users_folders INNER JOIN folders ON users_folders.folder_id = folders.id WHERE user_id = {$user_id}";
+$query = "SELECT token, name, encrypted_key FROM users_folders INNER JOIN folders ON users_folders.folder_id = folders.id WHERE user_id = {$user_id} ORDER BY id DESC";
 $result = mysqli_query($con, $query);
 
 $folders = [];

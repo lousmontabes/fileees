@@ -61,7 +61,9 @@ if (!isset ($_GET['folder'])) {
 
     <div class="header preview" id="titlewrap">
 
-        <div id="title" class="title big" style="margin-left: 10px" contenteditable="true" spellcheck="false"><?php echo $folderName ?></div>
+        <a href="folder.php?folder=<?php echo $folderToken ?>">
+            <div id="title" class="title big" style="margin-left: 10px" spellcheck="false"><?php echo $folderName ?></div>
+        </a>
         <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> &<?php echo $folderToken ?></div>
 
     </div>
@@ -70,7 +72,7 @@ if (!isset ($_GET['folder'])) {
         &nbsp;
     </div>
 
-    <div class="grid" id="mainGrid">
+    <div class="grid" id="mainGrid<?php echo $folderToken?>">
         <?php include("grid_preview.php") ?>
     </div>
 
@@ -101,3 +103,22 @@ if (!isset ($_GET['folder'])) {
         <div class="name">Saving...</div>
     </div>
 </div>
+
+<script>
+
+    /**
+     * Dropzone script to detect file drag-and-drop
+     */
+    var dropzone = new Dropzone("div#mainGrid<?php echo $folderToken?>", {
+        url: "backend/dummy_upload.php",
+        init: function() {
+            this.on("sending", function(file, xhr, formData){
+
+                fileUpload = new FileUpload(file, "<?php echo $publickey ?>", <?php echo $folderId ?>);
+                fileUpload.proceed();
+
+            });
+        }
+    });
+
+</script>

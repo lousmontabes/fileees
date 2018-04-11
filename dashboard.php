@@ -39,6 +39,10 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
             margin-bottom: 4em;
         }
 
+        .splash a {
+            color: white;
+        }
+
         .splash .header {
             font-size: 32px;
             font-weight: 100;
@@ -82,6 +86,16 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
         .header.preview .title {
             font-size: 32px;
+            border: none;
+            border-bottom: 2px dotted transparent;
+        }
+
+        .header.preview .title:hover {
+            border-bottom: 2px dotted black;
+        }
+
+        .header.preview .title:active, .header.preview .title:focus {
+            margin-bottom: 3px;
         }
 
         .header.preview .subtitle {
@@ -111,11 +125,16 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
             <div class="tagline">Welcome to your stuff</div>
             <br>
             <div class="splash-banner">
-                <button class="button green">
-                    Create new folder
-                </button>
+                <a href="setup_folder.php?c=4AC29A">
+                    <button class="button green">
+                        Create new folder
+                    </button>
+                </a>
                 <button class="button green">
                     Check out existing folder
+                </button>
+                <button class="button green">
+                    ⋮
                 </button>
             </div>
 
@@ -142,7 +161,167 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
 <script>
 
+    /* FILE UPLOAD */
+
+    /**
+     * Class that defines a file and its corresponding FileReader to manage file uploads.
+     */
+    class FileUpload {
+
+        constructor(file, publicKey, folderId) {
+
+            // File to be uploaded.
+            this.file = file;
+
+            // FileReader to read file data.
+            this.fileReader = new FileReader();
+
+            // Function to be ran once FileReader is done reading file data.
+            this.fileReader.onload = function () {
+
+                console.log(file.name);
+
+                // Get resulting byte ArrayBuffer
+                var arrayBuffer = this.result;
+
+                // Encrypt base64-encoded string
+                var encrypted = encryptFile(arrayBuffer, publicKey);
+
+                console.log("Encrypted");
+
+                // Make AJAX call to server script to upload the encrypted data
+                // and corresponding encrypted symmetric key onto server
+                uploadFile(file.name, arrayBuffer.byteLength, encrypted.data, encrypted.key, folderId);
+
+            };
+        }
+
+        proceed() {
+            this.fileReader.readAsArrayBuffer(this.file);
+        }
+
+    }
+
+    /**
+     * Encrypt file using encryption.js using globally defined public key for current folder.
+     * @param bytes:     Byte array or ArrayBuffer containing data to be encrypted.
+     * @param publicKey: Public EC key to encrypt the file with.
+     * @returns:         Encrypted data and key.
+     */
+    function encryptFile(bytes, publicKey) {
+
+        // Encode byte array into base64 string
+        var binaryString = arrayBufferToBase64(bytes);
+
+        var encrypted = fullEncrypt(binaryString, publicKey);
+        return {data: encrypted.data.toString(), key: encrypted.key};
+    }
+
+    /**
+     * Make AJAX call to server script to upload encrypted file and key.
+     * @param name:     Name to associate the file with.
+     * @param size:     Size (in bytes) of the file.
+     * @param data:     Encrypted data to be uploaded as a file onto the server.
+     * @param key:      Encrypted symmetric key data has been encrypted with.
+     */
+    function uploadFile(name, size, data, key, folderId) {
+
+        $.ajax({
+            type: 'POST',
+            url: 'backend/upload_file.php',
+            data: {
+                folderId: folderId,
+                name: name,
+                size: size,
+                bytes: data,
+                key: key
+            }
+        }).done(function(response) {
+            console.log(response);
+
+            var index = $.inArray(name, filenames);
+            updateGrid(index);
+        });
+
+    }
+
+    /**
+     * Convert a byte array to a base-64 encoded string.
+     * @param buffer
+     * @returns {string}
+     */
+    function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
+    /* FILE DOWNLOAD */
+
+    /**
+     * Get version data from server for a specified ID and hash.
+     * @param id    ID of the version to retrieve
+     * @param hash  Hash of the version to retrieve
+     * @param name  Name of the file the version belongs to
+     */
+    function retrieveVersion(id, hash, name) {
+
+        if (privateKey == "") {
+
+            // No private key has been specified: file cannot be decrypted.
+            alert("Couldn't decrypt: no key provided.");
+
+        } else {
+
+            // Make AJAX call to retrieve encrypted file data.
+            $.ajax({
+                type: 'POST',
+                url: 'backend/retrieve_version.php',
+                data: {id: id, hash: hash}
+            }).done(function(response) {
+
+                console.log(response);
+
+                var json = jQuery.parseJSON(response);
+                var data = json.data;
+                var key = json.key;
+
+                // Attempt to decrypt key & file with specified private key.
+                try {
+
+                    // Decrypt file. Throws exception if decryption isn't possible.
+                    var decrypted = fullDecrypt(data, key, privateKey);
+
+                    // Decode base64 encoded string into byte ArrayBuffer.
+                    var bytes = base64ToArrayBuffer(decrypted);
+
+                    // Download decoded file onto user's device.
+                    saveFile(name, bytes);
+
+                } catch (ex) {
+
+                    // File couldn't be decrypted using the provided key.
+                    alert("Couldn't decrypt: incorrect key.");
+
+                }
+
+            });
+        }
+
+    }
+
+</script>
+
+<script>
+
+    /* FOLDER PARSING AND PRIVATE KEY RETRIEVAL */
+
     var pbkdf2 = "";
+    var folders = {};
 
     <?php if ($loggedIn) { ?>
     pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
@@ -184,8 +363,7 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
     function addFolderPreview(name, token, key) {
         
         $.get("modules/folder_preview.php", {folder: token}).done(function(response) {
-            var finalHtml = "<a href='folder.php?folder=" + token + "#" + key + "'>" + response + "</a>";
-            $("#userFolders").append(finalHtml);
+            $("#userFolders").append(response);
         });
 
     }

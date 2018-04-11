@@ -289,6 +289,7 @@ form {
     transition: 0.1s;
     width: 16%;
     min-width: 160px;
+    max-width: 180px;
     font-family: Europa, sans-serif;
     display: inline-block;
     padding: 10px;
