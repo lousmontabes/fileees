@@ -264,11 +264,14 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
     /**
      * Get version data from server for a specified ID and hash.
-     * @param id    ID of the version to retrieve
-     * @param hash  Hash of the version to retrieve
-     * @param name  Name of the file the version belongs to
+     * @param id          ID of the version to retrieve
+     * @param hash        Hash of the version to retrieve
+     * @param name        Name of the file the version belongs to
+     * @param folderToken Token of the folder file belongs to
      */
-    function retrieveVersion(id, hash, name) {
+    function retrieveVersion(id, hash, name, folderToken) {
+
+        var privateKey = keys[folderToken];
 
         if (privateKey == "") {
 
@@ -314,6 +317,36 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
     }
 
+    /**
+     * Convert a base-64 formatted string to a byte array
+     * @param base64
+     * @returns {Uint8Array}
+     */
+    function base64ToArrayBuffer(base64) {
+        var binaryString = window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        for (var i = 0; i < binaryLen; i++) {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        return bytes;
+    }
+
+    /**
+     * Write a file with the specified bytes and store in the client's disk with the given name
+     * @param name
+     * @param bytes
+     */
+    function saveFile(name, bytes) {
+        var blob = new Blob([bytes]);
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        var fileName = name;
+        link.download = fileName;
+        link.click();
+    }
+
 </script>
 
 <script>
@@ -321,7 +354,7 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
     /* FOLDER PARSING AND PRIVATE KEY RETRIEVAL */
 
     var pbkdf2 = "";
-    var folders = {};
+    var keys = {};
 
     <?php if ($loggedIn) { ?>
     pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
@@ -346,6 +379,7 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
                 folders.forEach(function (folder) {
                     key = decryptKey(folder.encrypted_key);
+                    keys[folder.token] = key;
                     addFolderPreview(folder.name, folder.token, key);
                 });
 

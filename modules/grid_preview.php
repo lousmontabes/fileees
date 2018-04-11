@@ -20,6 +20,7 @@ if (!isset($files)) {
         $row = mysqli_fetch_array($result);
 
         $folderName = $row['name'];
+        $folderToken = $row['token'];
 
         $files = [];
 
@@ -54,7 +55,7 @@ if (empty($files)) {
 
         ?>
 
-        <div class="item" id="item<?php echo $i ?>" onclick="retrieveVersion(<?php echo $version['id'] ?>, '<?php echo $version['hash'] ?>', '<?php echo $file['name']?>')">
+        <div class="item" id="item<?php echo $i ?>" onclick="retrieveVersion(<?php echo $version['id'] ?>, '<?php echo $version['hash'] ?>', '<?php echo $file['name']?>', '<?php echo $folderToken ?>')">
             <div class="view jpg">
 
                 <div class="preview">
