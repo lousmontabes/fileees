@@ -206,6 +206,7 @@ form {
 }
 
 .area {
+    position: relative;
     margin-left: 5vw;
     margin-right: 5vw;
 }
@@ -729,4 +730,21 @@ form {
 
 .logOutButton:hover {
     color: white;
+}
+
+.removeButton {
+    cursor: pointer;
+    transition: .2s;
+    position: absolute;
+    right: 4em;
+    padding: .5em .7em;
+    opacity: 0;
+}
+
+.area:hover .removeButton:hover {
+    opacity: 1;
+}
+
+.area:hover .removeButton {
+    opacity: .5;
 }

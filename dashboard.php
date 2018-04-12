@@ -8,6 +8,7 @@
 
 session_start();
 $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
+if (!$loggedIn) header("Location: ./index.php");
 
 ?>
 
@@ -28,6 +29,10 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
     <style>
 
+        body {
+            background: whitesmoke;
+        }
+
         .splash {
             position: relative;
             color: white;
@@ -36,7 +41,12 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
             font-family: "Open sans";
             padding-top: 5em;
             padding-bottom: 2.5em;
-            margin-bottom: 4em;
+        }
+
+        .splash .area {
+            background: transparent;
+            margin: 0 5em;
+            padding: 0;
         }
 
         .splash a {
@@ -105,8 +115,42 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
         .logo {
             color: white;
             position: absolute;
-            top: 2em;
+            top: -2em;
             font-weight: 100;
+        }
+
+        #userFolders .area {
+            width: 34.5em;
+            background: white;
+            margin: 1em 0;
+            padding: 3em;
+            padding-bottom: 0;
+        }
+
+        #userFolders {
+            width: 100vw;
+            margin: 0 1em;
+        }
+
+        .panel {
+            position: fixed;
+            right: 0;
+            width: 12em;
+            height: 20em;
+            margin: 1.5em;
+            background: white;
+            z-index: 1000;
+            display: none;
+        }
+
+        .panel .navigation {
+            margin: 2em;
+        }
+
+        #emptyState {
+            display: none;
+            width: 25em;
+            padding: 4em;
         }
 
     </style>
@@ -142,22 +186,51 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 
     </div>
 
+    <div class="panel">
+        <div class="navigation">
+            Hi
+        </div>
+    </div>
+
     <div id="userFolders">
 
         <!-- Folder previews load via AJAX -->
 
+        <div id="emptyState" style="opacity:.5"><div  class="content">Start by creating a folder. All your folders and their contents will show up here.</div></div>
+
+    </div>
+
+    <div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">
+        <div class="hover-view" id="moreInfoView">
+
+            <!-- File info loads via AJAX -->
+
+        </div>
     </div>
 
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="libraries/crypto/aes.js"></script>
 <script src="libraries/crypto/pbkdf2.js"></script>
 <script src="libraries/crypto/ecc-min.js"></script>
 <script src="libraries/crypto/encryption.js"></script>
 <script src="libraries/dropzone.js"></script>
+
+<script>
+
+    // Initialize Masonry
+
+    $masonryDiv = $('#userFolders').masonry({
+        // options
+        itemSelector: '.area',
+        columnWidth: 675,
+        hiddenStyle: { opacity: 0, transform: "translateY(15px)" }
+    });
+
+</script>
 
 <script>
 
@@ -347,6 +420,42 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
         link.click();
     }
 
+    /* FILE INFO */
+
+    var moreInfoWrapDiv = $("#moreInfoWrap");
+    var moreInfoDiv = $("#moreInfoView");
+
+    function showFileInfo(id) {
+
+        moreInfoWrapDiv.addClass("displaying");
+
+        $.post("modules/file-info.php", {id: id} ).done(function(response) {
+            moreInfoDiv.html(response);
+            moreInfoWrapDiv.css("opacity", 1);
+            moreInfoDiv.addClass("displaying");
+        });
+
+    }
+
+    function hideFileInfo() {
+
+        moreInfoWrapDiv.css("opacity", 0);
+        setTimeout('moreInfoWrapDiv.removeClass("displaying")', 200);
+        moreInfoDiv.removeClass("displaying");
+
+        setTimeout('moreInfoDiv.html("Loading...")', 200);
+
+    }
+
+    moreInfoDiv.click(function(e){
+        e.stopPropagation();
+    });
+
+    function moreInfoClicked(e, id) {
+        showFileInfo(id);
+        e.stopPropagation();
+    }
+
 </script>
 
 <script>
@@ -397,13 +506,41 @@ $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
     function addFolderPreview(name, token, key) {
         
         $.get("modules/folder_preview.php", {folder: token}).done(function(response) {
-            $("#userFolders").append(response);
+            $response = $(response);
+            $("#userFolders").append($response).masonry('appended', $response);
         });
 
     }
 
     function decryptKey(encrypted) {
         return decryptAES(encrypted, pbkdf2).toString(CryptoJS.enc.Utf8);
+    }
+
+    function showEmptyStateView() {
+        $("#emptyState").css("display", "block");
+    }
+
+    /* FOLDER MANAGEMENT */
+
+    /**
+     * Removes the relation between the current user and the specified folder
+     * @param folderId
+     */
+    function removeRelation(folderId) {
+
+        var folderDiv = $("#folderPreview" + folderId);
+
+        $.post("./backend/remove_user_folder_relation.php", {folder_id: folderId}).done(function (response) {
+
+            if (response == 'success') {
+
+                // Update masonry layout
+                $masonryDiv.masonry('remove', folderDiv);
+                $masonryDiv.masonry('layout');
+            }
+
+        });
+
     }
 
 </script>

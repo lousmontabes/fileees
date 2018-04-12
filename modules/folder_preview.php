@@ -57,7 +57,9 @@ if (!isset ($_GET['folder'])) {
 ?>
 
 
-<div class="centered area">
+<div class="centered area" id="folderPreview<?php echo $folderId ?>">
+
+    <div class="removeButton" onClick="removeRelation(<?php echo $folderId ?>)"><img src="img/delete.svg" height="10px"></div>
 
     <div class="header preview" id="titlewrap">
 

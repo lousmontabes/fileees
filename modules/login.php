@@ -38,7 +38,7 @@
 
             if (json.status == "success") {
 
-                window.location.replace("./");
+                window.location.replace("./dashboard.php");
 
             } else {
                 json.error.forEach(function(it){
