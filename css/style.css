@@ -741,10 +741,10 @@ form {
     opacity: 0;
 }
 
-.area:hover .removeButton:hover {
+.folderArea:hover .removeButton:hover {
     opacity: 1;
 }
 
-.area:hover .removeButton {
+.folderArea:hover .removeButton {
     opacity: .5;
 }

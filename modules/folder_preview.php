@@ -56,28 +56,29 @@ if (!isset ($_GET['folder'])) {
 
 ?>
 
+<div class="folderAreaWrap" id="folderPreview<?php echo $folderId ?>">
+    <div class="folderArea">
 
-<div class="centered area" id="folderPreview<?php echo $folderId ?>">
+        <div class="removeButton" onClick="removeRelation(<?php echo $folderId ?>)"><img src="img/delete.svg" height="10px"></div>
 
-    <div class="removeButton" onClick="removeRelation(<?php echo $folderId ?>)"><img src="img/delete.svg" height="10px"></div>
+        <div class="header preview" id="titlewrap">
 
-    <div class="header preview" id="titlewrap">
+            <a href="folder.php?folder=<?php echo $folderToken ?>">
+                <div id="title" class="title big" style="margin-left: 10px" spellcheck="false"><?php echo $folderName ?></div>
+            </a>
+            <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> &<?php echo $folderToken ?></div>
 
-        <a href="folder.php?folder=<?php echo $folderToken ?>">
-            <div id="title" class="title big" style="margin-left: 10px" spellcheck="false"><?php echo $folderName ?></div>
-        </a>
-        <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> &<?php echo $folderToken ?></div>
+        </div>
+
+        <div class="spacer">
+            &nbsp;
+        </div>
+
+        <div class="grid" id="mainGrid<?php echo $folderToken?>">
+            <?php include("grid_preview.php") ?>
+        </div>
 
     </div>
-
-    <div class="spacer">
-        &nbsp;
-    </div>
-
-    <div class="grid" id="mainGrid<?php echo $folderToken?>">
-        <?php include("grid_preview.php") ?>
-    </div>
-
 </div>
 
 <div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">

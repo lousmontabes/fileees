@@ -57,7 +57,7 @@ $username = htmlentities($row['name']);
             color: white;
             width: 100vw;
             background: #4AC29A;
-            font-family: "Open sans";
+            font-family: "Open Sans";
             padding-top: 5em;
             padding-bottom: 2.5em;
         }
@@ -66,6 +66,7 @@ $username = htmlentities($row['name']);
             background: transparent;
             margin: 0 5em;
             padding: 0;
+            width: auto;
         }
 
         .splash a {
@@ -117,6 +118,7 @@ $username = htmlentities($row['name']);
             font-size: 32px;
             border: none;
             border-bottom: 2px dotted transparent;
+            max-width: 85%;
         }
 
         .header.preview .title:hover {
@@ -138,17 +140,24 @@ $username = htmlentities($row['name']);
             font-weight: 100;
         }
 
-        #userFolders .area {
-            width: 34.5em;
+        .folderArea {
             background: white;
-            margin: 1em 0;
+            margin: .5em;
             padding: 3em;
-            padding-bottom: 0;
+        }
+
+        .folderAreaSizer,
+        .folderAreaWrap {
+            width: 50%;
+        }
+
+        .userFoldersWrap {
+            width: 100vw;
         }
 
         #userFolders {
-            width: 100vw;
-            margin: 0 1em;
+            margin: .5em;
+            /*margin: .5em 1em;*/
         }
 
         .panel {
@@ -213,12 +222,15 @@ $username = htmlentities($row['name']);
         </div>
     </div>
 
-    <div id="userFolders">
+    <div class="userFoldersWrap">
+        <div id="userFolders">
 
-        <!-- Folder previews load via AJAX -->
+            <!-- Folder previews load via AJAX -->
 
-        <div id="emptyState" style="opacity:.5"><div  class="content">Start by creating a folder. All your folders and their contents will show up here.</div></div>
+            <div class="folderAreaSizer"></div>
+            <div id="emptyState" style="opacity:.5"><div  class="content">Start by creating a folder. All your folders and their contents will show up here.</div></div>
 
+        </div>
     </div>
 
     <div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">
@@ -246,8 +258,8 @@ $username = htmlentities($row['name']);
 
     $masonryDiv = $('#userFolders').masonry({
         // options
-        itemSelector: '.area',
-        columnWidth: 675,
+        itemSelector: '.folderAreaWrap',
+        columnWidth: '.folderAreaSizer',
         hiddenStyle: { opacity: 0, transform: "translateY(15px)" }
     });
 
