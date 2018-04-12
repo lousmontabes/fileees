@@ -2,6 +2,10 @@
 
 session_start();
 
+// Check if user is logged in. If so, redirect to dashboard.
+$loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
+if ($loggedIn) header("Location: ./dashboard.php");
+
 function getRandomWelcomePhrase() {
     $phrases = file("backend/welcome_phrases.txt");
     return $phrases[array_rand($phrases)];
