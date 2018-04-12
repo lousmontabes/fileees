@@ -6,9 +6,28 @@
  * Time: 11:31
  */
 
+require_once ("backend/connection.php");
+
 session_start();
+
+function getRandomWelcomePhrase() {
+    $phrases = file("backend/welcome_phrases.txt");
+    return $phrases[array_rand($phrases)];
+}
+
+$phrase = htmlentities(getRandomWelcomePhrase());
+
+// Check if user is properly logged in. Otherwise, redirect to index.php
 $loggedIn = (isset($_SESSION['pbkdf2']) && isset($_SESSION['user_id']));
 if (!$loggedIn) header("Location: ./index.php");
+
+// Get current user username from database
+$query = "SELECT name FROM users WHERE id = {$_SESSION['user_id']}";
+$result = mysqli_query($con, $query);
+$row = mysqli_fetch_array($result);
+
+// Sanitize username before embedding into html
+$username = htmlentities($row['name']);
 
 ?>
 
@@ -165,8 +184,8 @@ if (!$loggedIn) header("Location: ./index.php");
 
             <div class="logo">filee.es</div>
 
-            <div class="header">Hello, Lluís</div>
-            <div class="tagline">Welcome to your stuff</div>
+            <div class="header">Hello, <?php echo $username ?></div>
+            <div class="tagline"><?php echo $phrase ?></div>
             <br>
             <div class="splash-banner">
                 <a href="setup_folder.php?c=4AC29A">
@@ -174,12 +193,14 @@ if (!$loggedIn) header("Location: ./index.php");
                         Create new folder
                     </button>
                 </a>
-                <button class="button green">
+                <!--<button class="button green">
                     Check out existing folder
-                </button>
-                <button class="button green">
-                    ⋮
-                </button>
+                </button>-->
+                <a href="backend/log_out.php">
+                    <button class="button green">
+                        Log out
+                    </button>
+                </a>
             </div>
 
         </div>
