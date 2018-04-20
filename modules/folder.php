@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: lluismontabes
- * Date: 11/4/18
- * Time: 11:43
+ * Date: 16/4/18
+ * Time: 17:57
  */
 
 require_once("../backend/connection.php");
@@ -56,27 +56,52 @@ if (!isset ($_GET['folder'])) {
 
 ?>
 
-<div class="folderAreaWrap" id="folderPreview<?php echo $folderToken?>">
-    <div class="folderArea">
+<style>
 
-        <div class="removeButton" onClick="removeRelation(<?php echo $folderId ?>, '<?php echo $folderToken ?>')"><img src="img/delete.svg" height="10px"></div>
+    .spacer {
+        height: 130px;
+    }
 
-        <div class="header preview" id="titlewrap">
+    @media (max-width: 500px) {
 
-            <div id="title" class="title big" style="margin-left: 10px" onclick="openFolder('<?php echo $folderToken?>')"><?php echo $folderName ?></div>
-            <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> &<?php echo $folderToken ?></div>
+        /* Mobile tweaks */
 
-        </div>
+        /* Let items be smaller */
+        .item {
+            min-width: 140px;
+        }
 
-        <div class="spacer">
-            &nbsp;
-        </div>
+        /* Make previews take less empty space inside item */
+        .item .previewContent {
+            padding: 1em;
+        }
 
-        <div class="grid" id="mainGrid<?php echo $folderToken?>">
-            <?php include("grid_preview.php") ?>
-        </div>
+        /* Make title take less empty space at the top of the page */
+        .titlewrap {
+            padding-top: 20px;
+            padding-bottom: 0;
+        }
+    }
+
+</style>
+
+<div class="centered area">
+
+    <div class="titlewrap big" id="titlewrap">
+
+        <div id="title" class="title big" style="margin-left: 10px" contenteditable="true" spellcheck="false"><?php echo $folderName ?></div>
+        <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> Encrypted</div>
 
     </div>
+
+    <div class="spacer">
+        &nbsp;
+    </div>
+
+    <div class="grid" id="mainGrid">
+        <?php include ("./grid_preview.php") ?>
+    </div>
+
 </div>
 
 <div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">
@@ -97,30 +122,10 @@ if (!isset ($_GET['folder'])) {
 
             <div class="overlay">
                 <div class="overlayContent">
-                    <br>
-                </div>
+                    <br></div>
             </div>
 
         </div>
         <div class="name">Saving...</div>
     </div>
 </div>
-
-<script>
-
-    /**
-     * Dropzone script to detect file drag-and-drop
-     */
-    var dropzone = new Dropzone("div#mainGrid<?php echo $folderToken?>", {
-        url: "backend/dummy_upload.php",
-        init: function() {
-            this.on("sending", function(file, xhr, formData){
-
-                fileUpload = new FileUpload(file, "<?php echo $publickey ?>", "<?php echo $folderToken ?>");
-                fileUpload.proceed();
-
-            });
-        }
-    });
-
-</script>

@@ -11,27 +11,31 @@ if (!isset($files)) {
     require_once("../backend/connection.php");
 
     if (!isset ($_POST['folder']) || !is_numeric($_POST['folder'])) {
-        // ERROR: The 'folder' GET parameter is not set or not numeric.
+
+        $result = mysqli_query($con, "SELECT id FROM folders WHERE token = '{$_POST['token']}'");
+        $row = mysqli_fetch_array($result);
+        $folderId = $row['id'];
+
     } else {
 
         $folderId = mysqli_real_escape_string($con, $_POST['folder']);
 
-        $result = mysqli_query($con, "SELECT * FROM folders WHERE id = '{$folderId}' OFFSET 0 LIMIT 9");
-        $row = mysqli_fetch_array($result);
-
-        $folderName = $row['name'];
-        $folderToken = $row['token'];
-
-        $files = [];
-
-        $result = mysqli_query($con, "SELECT `id`, `name`, `type`, `format`, `extension`, `uploader`, `folder` FROM files WHERE folder = '$folderId'");
-        while ($row = mysqli_fetch_array($result)) {
-            array_push($files, $row);
-        }
-
-        $filenames = array_column($files, 'name');
-
     }
+
+    $result = mysqli_query($con, "SELECT * FROM folders WHERE id = '{$folderId}' LIMIT 9");
+    $row = mysqli_fetch_array($result);
+
+    $folderName = $row['name'];
+    $folderToken = $row['token'];
+
+    $files = [];
+
+    $result = mysqli_query($con, "SELECT `id`, `name`, `type`, `format`, `extension`, `uploader`, `folder` FROM files WHERE folder = '$folderId'");
+    while ($row = mysqli_fetch_array($result)) {
+        array_push($files, $row);
+    }
+
+    $filenames = array_column($files, 'name');
 
 }
 
@@ -104,7 +108,7 @@ if (empty($files)) {
                             ?>
                         </div>
 
-                        <div class="more-info" onclick="moreInfoClicked(event, <?php echo $file['id'] ?>)">Show all versions</div>
+                        <div class="more-info" onclick="moreInfoClicked(event, <?php echo $file['id'] ?>, '<?php echo $folderToken ?>')">Show all versions</div>
 
                     </div>
                 </div>

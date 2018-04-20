@@ -12,7 +12,14 @@ require_once ("../libraries/aws/aws-autoloader.php");
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
-$folderId = $_POST['folderId'];
+if (isset($_POST['folderId'])) {
+    $folderId = $_POST['folderId'];
+} else {
+    $result = mysqli_query($con, "SELECT id FROM folders WHERE token = '{$_POST['folderToken']}'");
+    $row = mysqli_fetch_array($result);
+    $folderId = $row['id'];
+}
+
 $name = $_POST['name'];
 $size = $_POST['size'];
 $filebytes = $_POST['bytes'];

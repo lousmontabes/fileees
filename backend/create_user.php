@@ -6,6 +6,7 @@
  * Time: 20:34
  */
 
+require_once ("../libraries/random_compat/random.php");
 require_once ("connection.php");
 
 $proceed = true;

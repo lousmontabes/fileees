@@ -119,6 +119,7 @@ $username = htmlentities($row['name']);
             border: none;
             border-bottom: 2px dotted transparent;
             max-width: 85%;
+            cursor: pointer;
         }
 
         .header.preview .title:hover {
@@ -146,9 +147,14 @@ $username = htmlentities($row['name']);
             padding: 3em;
         }
 
+        .folderArea .grid {
+            margin-bottom: 0;
+        }
+
         .folderAreaSizer,
         .folderAreaWrap {
             width: 50%;
+            min-width: 480px;
         }
 
         .userFoldersWrap {
@@ -254,9 +260,10 @@ $username = htmlentities($row['name']);
 
 <script>
 
-    // Initialize Masonry
+    var masonryContainer = $("#userFolders");
 
-    $masonryDiv = $('#userFolders').masonry({
+    // Initialize Masonry
+    $masonryDiv = masonryContainer.masonry({
         // options
         itemSelector: '.folderAreaWrap',
         columnWidth: '.folderAreaSizer',
@@ -274,7 +281,7 @@ $username = htmlentities($row['name']);
      */
     class FileUpload {
 
-        constructor(file, publicKey, folderId) {
+        constructor(file, publicKey, folderToken) {
 
             // File to be uploaded.
             this.file = file;
@@ -297,7 +304,7 @@ $username = htmlentities($row['name']);
 
                 // Make AJAX call to server script to upload the encrypted data
                 // and corresponding encrypted symmetric key onto server
-                uploadFile(file.name, arrayBuffer.byteLength, encrypted.data, encrypted.key, folderId);
+                folders[folderToken].uploadFile(file.name, arrayBuffer.byteLength, encrypted.data, encrypted.key);
 
             };
         }
@@ -321,34 +328,6 @@ $username = htmlentities($row['name']);
 
         var encrypted = fullEncrypt(binaryString, publicKey);
         return {data: encrypted.data.toString(), key: encrypted.key};
-    }
-
-    /**
-     * Make AJAX call to server script to upload encrypted file and key.
-     * @param name:     Name to associate the file with.
-     * @param size:     Size (in bytes) of the file.
-     * @param data:     Encrypted data to be uploaded as a file onto the server.
-     * @param key:      Encrypted symmetric key data has been encrypted with.
-     */
-    function uploadFile(name, size, data, key, folderId) {
-
-        $.ajax({
-            type: 'POST',
-            url: 'backend/upload_file.php',
-            data: {
-                folderId: folderId,
-                name: name,
-                size: size,
-                bytes: data,
-                key: key
-            }
-        }).done(function(response) {
-            console.log(response);
-
-            var index = $.inArray(name, filenames);
-            updateGrid(index);
-        });
-
     }
 
     /**
@@ -376,51 +355,7 @@ $username = htmlentities($row['name']);
      * @param folderToken Token of the folder file belongs to
      */
     function retrieveVersion(id, hash, name, folderToken) {
-
-        var privateKey = keys[folderToken];
-
-        if (privateKey == "") {
-
-            // No private key has been specified: file cannot be decrypted.
-            alert("Couldn't decrypt: no key provided.");
-
-        } else {
-
-            // Make AJAX call to retrieve encrypted file data.
-            $.ajax({
-                type: 'POST',
-                url: 'backend/retrieve_version.php',
-                data: {id: id, hash: hash}
-            }).done(function(response) {
-
-                console.log(response);
-
-                var json = jQuery.parseJSON(response);
-                var data = json.data;
-                var key = json.key;
-
-                // Attempt to decrypt key & file with specified private key.
-                try {
-
-                    // Decrypt file. Throws exception if decryption isn't possible.
-                    var decrypted = fullDecrypt(data, key, privateKey);
-
-                    // Decode base64 encoded string into byte ArrayBuffer.
-                    var bytes = base64ToArrayBuffer(decrypted);
-
-                    // Download decoded file onto user's device.
-                    saveFile(name, bytes);
-
-                } catch (ex) {
-
-                    // File couldn't be decrypted using the provided key.
-                    alert("Couldn't decrypt: incorrect key.");
-
-                }
-
-            });
-        }
-
+        folders[folderToken].retrieveVersion(id, hash, name);
     }
 
     /**
@@ -458,18 +393,6 @@ $username = htmlentities($row['name']);
     var moreInfoWrapDiv = $("#moreInfoWrap");
     var moreInfoDiv = $("#moreInfoView");
 
-    function showFileInfo(id) {
-
-        moreInfoWrapDiv.addClass("displaying");
-
-        $.post("modules/file-info.php", {id: id} ).done(function(response) {
-            moreInfoDiv.html(response);
-            moreInfoWrapDiv.css("opacity", 1);
-            moreInfoDiv.addClass("displaying");
-        });
-
-    }
-
     function hideFileInfo() {
 
         moreInfoWrapDiv.css("opacity", 0);
@@ -484,8 +407,8 @@ $username = htmlentities($row['name']);
         e.stopPropagation();
     });
 
-    function moreInfoClicked(e, id) {
-        showFileInfo(id);
+    function moreInfoClicked(e, id, token) {
+        folders[token].showFileInfo(id);
         e.stopPropagation();
     }
 
@@ -495,6 +418,7 @@ $username = htmlentities($row['name']);
 
     /* FOLDER PARSING AND PRIVATE KEY RETRIEVAL */
 
+    var folders = {};
     var pbkdf2 = "";
     var keys = {};
 
@@ -502,27 +426,33 @@ $username = htmlentities($row['name']);
     pbkdf2 = "<?php echo $_SESSION['pbkdf2'] ?>";
     <?php } ?>
 
-    var folderPreviewDummy = $("#folderPreviewDummy");
-
     <?php if ($loggedIn) { ?>
     retrieveUserFolders();
     <?php } ?>
 
+    /**
+     * Retrieve all folders related to the user via AJAX
+     */
     function retrieveUserFolders() {
 
-        var folders;
+        var retrievedFolders;
 
         $.ajax("backend/get_session_user_folders.php", {success: function(response) {
 
             var key;
-            folders = jQuery.parseJSON(response);
+            retrievedFolders = jQuery.parseJSON(response);
 
-            if (folders.length > 0) {
+            if (retrievedFolders.length > 0) {
 
-                folders.forEach(function (folder) {
-                    key = decryptKey(folder.encrypted_key);
-                    keys[folder.token] = key;
-                    addFolderPreview(folder.name, folder.token, key);
+                retrievedFolders.forEach(function (f) {
+
+                    key = decryptKey(f.encrypted_key);
+
+                    var folder = new Folder(f.name, f.token, key);
+                    folders[folder.token] = folder;
+
+                    folder.displayPreview(masonryContainer);
+
                 });
 
             } else {
@@ -533,15 +463,6 @@ $username = htmlentities($row['name']);
             }
 
         }});
-
-    }
-
-    function addFolderPreview(name, token, key) {
-        
-        $.get("modules/folder_preview.php", {folder: token}).done(function(response) {
-            $response = $(response);
-            $("#userFolders").append($response).masonry('appended', $response);
-        });
 
     }
 
@@ -558,22 +479,198 @@ $username = htmlentities($row['name']);
     /**
      * Removes the relation between the current user and the specified folder
      * @param folderId
+     * @param folderToken
      */
-    function removeRelation(folderId) {
-
-        var folderDiv = $("#folderPreview" + folderId);
+    function removeRelation(folderId, folderToken) {
 
         $.post("./backend/remove_user_folder_relation.php", {folder_id: folderId}).done(function (response) {
 
             if (response == 'success') {
 
                 // Update masonry layout
-                $masonryDiv.masonry('remove', folderDiv);
+                $masonryDiv.masonry('remove', folders[folderToken].getPreviewDiv());
                 $masonryDiv.masonry('layout');
             }
 
         });
 
+    }
+
+</script>
+
+<script>
+
+    /* FOLDER INFO & DISPLAY */
+
+    class Folder {
+
+        constructor(name, token, key) {
+            this.name = name;
+            this.token = token;
+            this.key = key;
+        }
+
+        /**
+         * Adds folder's corresponding preview html to the specified container div.
+         * @param container Parent div to preview. Must be a Masonry grid.
+         */
+        displayPreview(container) {
+
+            // Request folder preview html via AJAX
+            $.get("modules/folder_preview.php", {folder: this.token}).done(function(response) {
+                var $response = $(response);
+                container.append($response).masonry('appended', $response);
+            });
+
+        }
+
+        /**
+         * Returns a handle to the corresponding preview div or null if none exists.
+         */
+        getPreviewDiv() {
+            
+            var div = $("#folderPreview" + this.token);
+            var response = null;
+            
+            if (div.length > 0) {
+                response = div;
+            }
+            
+            return response;
+            
+        }
+
+        updateGrid() {
+
+            var that = this;
+
+            $.post("modules/grid_preview.php", {token: this.token}).done(function(response) {
+                console.log(response);
+                that.getGridDiv().html(response);
+            });
+
+            $masonryDiv.masonry("reload-items");
+
+        }
+
+        /**
+         * Returns a handle to the corresponding grid div or null if none exists.
+         */
+        getGridDiv () {
+            return this.getPreviewDiv().find(".grid");
+        }
+
+        /**
+         * Make AJAX call to server script to upload encrypted file and key.
+         * @param name:     Name to associate the file with.
+         * @param size:     Size (in bytes) of the file.
+         * @param data:     Encrypted data to be uploaded as a file onto the server.
+         * @param key:      Encrypted symmetric key data has been encrypted with.
+         */
+        uploadFile(name, size, data, key) {
+
+            var that = this;
+
+            $.ajax({
+                type: 'POST',
+                url: 'backend/upload_file.php',
+                data: {
+                    folderToken: this.token,
+                    name: name,
+                    size: size,
+                    bytes: data,
+                    key: key
+                }
+            }).done(function(response) {
+                console.log(response);
+
+                var index = $.inArray(name, filenames);
+                that.updateGrid();
+            });
+
+        }
+
+        /**
+         * Retrieve and save a version with the specified id and hash.
+         * @param id    Id of version
+         * @param hash  Hash of version
+         * @param name  Name of file to be saved
+         */
+        retrieveVersion(id, hash, name) {
+
+            var privateKey = this.key;
+
+            if (privateKey == "") {
+
+                // No private key has been specified: file cannot be decrypted.
+                alert("Couldn't decrypt: no key provided.");
+
+            } else {
+
+                // Make AJAX call to retrieve encrypted file data.
+                $.ajax({
+                    type: 'POST',
+                    url: 'backend/retrieve_version.php',
+                    data: {id: id, hash: hash}
+                }).done(function(response) {
+
+                    console.log(response);
+
+                    var json = jQuery.parseJSON(response);
+                    var data = json.data;
+                    var key = json.key;
+
+                    // Attempt to decrypt key & file with specified private key.
+                    try {
+
+                        // Decrypt file. Throws exception if decryption isn't possible.
+                        var decrypted = fullDecrypt(data, key, privateKey);
+
+                        // Decode base64 encoded string into byte ArrayBuffer.
+                        var bytes = base64ToArrayBuffer(decrypted);
+
+                        // Download decoded file onto user's device.
+                        saveFile(name, bytes);
+
+                    } catch (ex) {
+
+                        // File couldn't be decrypted using the provided key.
+                        alert("Couldn't decrypt: incorrect key.");
+
+                    }
+
+                });
+            }
+
+        }
+
+        /**
+         * Displays file info for the specified file
+         * @param id
+         */
+        showFileInfo(id) {
+
+            moreInfoWrapDiv.addClass("displaying");
+
+            $.post("modules/file-info.php", {id: id}).done(function (response) {
+                moreInfoDiv.html(response);
+                moreInfoWrapDiv.css("opacity", 1);
+                moreInfoDiv.addClass("displaying");
+            });
+
+        }
+
+        /**
+         * Opens this folder
+         */
+        open() {
+            window.location.href = "folder.php?folder=" + this.token + "#" + this.key;
+        }
+
+    }
+
+    function openFolder(token) {
+        folders[token].open();
     }
 
 </script>
