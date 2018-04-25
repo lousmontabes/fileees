@@ -64,7 +64,7 @@ if (!isset ($_GET['folder'])) {
         <div class="header preview" id="titlewrap">
 
             <div id="title" class="title big" style="margin-left: 10px" onclick="openFolder('<?php echo $folderToken?>')"><?php echo $folderName ?></div>
-            <div class="subtitle" id="encryptedMessage"><img src="img/padlock.svg" width="11px"> &<?php echo $folderToken ?></div>
+            <div class="subtitle" id="encryptedMessage">&<?php echo $folderToken ?> | <img src="img/padlock.svg" width="11px"> Encrypted</div>
 
         </div>
 
