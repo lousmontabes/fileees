@@ -84,13 +84,13 @@ if (!isset ($_GET['folder'])) {
     </div>
 </div>
 
-<div id="dummyItem">
+<div id="dummyItem<?php echo $folderToken ?>" style="display:none">
     <div class="item" id="lastItem">
         <div class="view jpg">
 
             <div class="preview">
                 <div class="previewContent">
-                    <img src="../img/fileicon.svg" class="fileicon">
+                    <img src="./img/fileicon.svg" class="fileicon">
                     <div class="extension"></div>
                 </div>
             </div>
@@ -108,6 +108,9 @@ if (!isset ($_GET['folder'])) {
 
 <script>
 
+    var nFiles = <?php echo $i ?>;
+    folders['<?php echo $folderToken?>'].nextItemId = nFiles;
+
     /**
      * Dropzone script to detect file drag-and-drop
      */
@@ -121,6 +124,36 @@ if (!isset ($_GET['folder'])) {
 
             });
         }
+    });
+
+    /**
+     * Dropzone events
+     */
+    dropzone.on("addedfile", function(file) {
+
+        // If no files had been added (empty-state screen was showing) hide empty-state screen.
+        if (folders['<?php echo $folderToken?>'].nextItemId == 0) $("#emptystate").css("display", "none");
+
+        // Check if a file with the same name exists
+        var index = $.inArray(file.name, filenames);
+
+        if (index != -1) {
+
+            /*
+            var updatedItemDiv = $("#item" + index);
+            var updatedItemNameDiv = $("#item" + index + " .name");
+
+            // Change UI to show that file is updating
+            updatedItemNameDiv.html("Saving...");
+            */
+
+        } else {
+
+            // Add dummy item representing new file.
+            folders['<?php echo $folderToken ?>'].addDummyItem();
+
+        }
+
     });
 
 </script>

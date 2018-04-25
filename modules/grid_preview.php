@@ -132,7 +132,7 @@ if (empty($files)) {
     var filenames;
 
     function updateFilenames(newFilenames) {
-        filenames = newFilenames;
+        folders['<?php echo $folderToken ?>'].filenames = newFilenames;
     }
 
     updateFilenames(<?php echo json_encode($filenames) ?>);

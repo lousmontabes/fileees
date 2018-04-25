@@ -508,6 +508,9 @@ $username = htmlentities($row['name']);
             this.name = name;
             this.token = token;
             this.key = key;
+            this.nextItemId = 0;
+            this.lastItem = null;
+            this.filenames = [];
         }
 
         /**
@@ -545,7 +548,6 @@ $username = htmlentities($row['name']);
             var that = this;
 
             $.post("modules/grid_preview.php", {token: this.token}).done(function(response) {
-                console.log(response);
                 that.getGridDiv().html(response);
             });
 
@@ -642,6 +644,23 @@ $username = htmlentities($row['name']);
                 });
             }
 
+        }
+
+        /**
+         * Displays dummy item representing an upload
+         */
+        addDummyItem() {
+
+            console.log(this.token);
+
+            var dummyItem = $("#dummyItem" + this.token);
+
+            dummyItem.children().attr('id', 'item' + this.nextItemId);
+            this.lastItem = $("#item" + this.nextItemId);
+
+            this.getGridDiv().append(dummyItem.html());
+
+            this.nextItemId++;
         }
 
         /**
