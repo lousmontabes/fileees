@@ -55,7 +55,7 @@ $username = htmlentities($row['name']);
         .splash {
             position: relative;
             color: white;
-            width: 100vw;
+            width: 100%;
             background: #4AC29A;
             font-family: "Open Sans";
             padding-top: 5em;
@@ -158,7 +158,7 @@ $username = htmlentities($row['name']);
         }
 
         .userFoldersWrap {
-            width: 100vw;
+            width: 100%;
         }
 
         #userFolders {
