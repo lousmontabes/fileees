@@ -59,7 +59,7 @@ $username = htmlentities($row['name']);
             background: #4AC29A;
             font-family: "Open Sans";
             padding-top: 5em;
-            padding-bottom: 6.5em;
+            padding-bottom: 2.5em;
         }
 
         .splash .area {
@@ -81,17 +81,6 @@ $username = htmlentities($row['name']);
         .splash .tagline {
             font-size: 32px;
             font-weight: 400;
-        }
-
-        .splash-banner {
-            background: #4AC29A;
-            display: block;
-            width: calc(100vw - 10em);
-            margin: 0;
-            z-index: 10;
-            padding: 1em 5em;
-            position: absolute;
-            transition: opacity .5s;
         }
 
         .button {
@@ -198,89 +187,65 @@ $username = htmlentities($row['name']);
             padding: 4em;
         }
 
-        .boardNavigation {
-            width: 100vw;
-            font-family: "Open Sans";
-        }
-
-        .board {
-            display: inline-block;
-            padding: 1em;
-            opacity: .5;
-            cursor: pointer;
-            transition: .2s;
-            border-bottom: 2px solid;
-            border-color: transparent;
-        }
-
-        .board.active {
-            border-color: black;
-        }
-
-        .board:hover, .board.active {
-            opacity: 1;
-        }
-
     </style>
 
 </head>
 
 <body>
 
-    <div id="intro">
-        <div class="splash">
+<div class="splash">
 
-            <div class="area centered">
+    <div class="area centered">
 
-                <div class="logo">filee.es</div>
+        <div class="logo">filee.es</div>
 
-                <div class="header">Hello, <?php echo $username ?></div>
-                <div class="tagline"><?php echo $phrase ?></div>
-
-            </div>
-
-            <div class="splash-banner">
-                <a href="setup_folder.php?c=4AC29A">
-                    <button class="button green">
-                        Create new folder
-                    </button>
-                </a>
-                <!--<button class="button green">
-                    Check out existing folder
-                </button>-->
-                <a href="backend/log_out.php">
-                    <button class="button green">
-                        Log out
-                    </button>
-                </a>
-            </div>
-
+        <div class="header">Hello, <?php echo $username ?></div>
+        <div class="tagline"><?php echo $phrase ?></div>
+        <br>
+        <div class="splash-banner">
+            <a href="setup_folder.php?c=4AC29A">
+                <button class="button green">
+                    Create new folder
+                </button>
+            </a>
+            <!--<button class="button green">
+                Check out existing folder
+            </button>-->
+            <a href="backend/log_out.php">
+                <button class="button green">
+                    Log out
+                </button>
+            </a>
         </div>
+
     </div>
 
-    <div class="boardNavigation">
-        <div style="width:3em"></div>
-        <div class="board active">Coses uni</div><div class="board">Hack-a-Game 2018</div><div class="board">Fileees meta</div>
+</div>
+
+<div class="panel">
+    <div class="navigation">
+        Hi
     </div>
+</div>
 
-    <div class="userFoldersWrap">
-        <div id="userFolders">
+<div class="userFoldersWrap">
+    <div id="userFolders">
 
-            <!-- Folder previews load via AJAX -->
+        <!-- Folder previews load via AJAX -->
 
-            <div class="folderAreaSizer"></div>
-            <div id="emptyState" style="opacity:.5"><div  class="content">Start by creating a folder. All your folders and their contents will show up here.</div></div>
+        <div class="folderAreaSizer"></div>
+        <div id="emptyState" style="opacity:.5"><div  class="content">Start by creating a folder. All your folders and their contents will show up here.</div></div>
 
-        </div>
     </div>
+</div>
 
-    <div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">
-        <div class="hover-view" id="moreInfoView">
+<div class="blackout" id="moreInfoWrap" onclick="hideFileInfo()">
+    <div class="hover-view" id="moreInfoView">
 
-            <!-- File info loads via AJAX -->
+        <!-- File info loads via AJAX -->
 
-        </div>
     </div>
+</div>
 
 </body>
 
@@ -294,27 +259,6 @@ $username = htmlentities($row['name']);
 <script src="libraries/dropzone.js"></script>
 
 <script>
-
-    /* SCROLL */
-    var banner = $(".splash-banner");
-    var bannerOffset = banner.offset().top;
-
-    $(window).scroll(function() {
-
-        var scrollTop = $(window).scrollTop();
-
-        if (scrollTop > bannerOffset) {
-            banner.css("position", "fixed");
-            banner.css("top", 0);
-        } else {
-            console.log("hi");
-            banner.css("position", "absolute");
-            banner.css("top", bannerOffset);
-        }
-
-    });
-
-    /* MASONRY */
 
     var masonryContainer = $("#userFolders");
 
@@ -556,63 +500,6 @@ $username = htmlentities($row['name']);
 
 <script>
 
-    /* BOARD INFO & DISPLAY */
-
-    class Board {
-
-        constructor(name, id) {
-            this.name = name;
-            this.id = id;
-            this.folders = {};
-            this.retrieveFolders();
-        }
-
-        /**
-         * Add folder to board.
-         * @param name  Name of the folder
-         * @param token Token of the folder
-         * @param key   Key of the folder
-         */
-        addFolder(name, token, key) {
-            this.folders[token] = new Folder(name, token, key);
-        }
-
-        /**
-         * Retrieve Folders related to this board.
-         */
-        retrieveFolders() {
-
-            var that = this;
-
-            // Request board folders tokens from database
-            $.get("backend/get_board_folders.php", {boardId: this.id}).done(function(response) {
-                var tokens = jQuery.parseJSON(response);
-                tokens.forEach(function(it){
-                    // Retrieve folder data from the previously retrieved folders array.
-                    // The folders array contains the folder's name, token and decrypted key.
-                    // This data can't be saved in the board-folders relation as it requires
-                    // encryption using the user's hashed password.
-                    that.addFolder(folders[it].name, folders[it].token, folders[it].key);
-                });
-            });
-
-        }
-
-        /**
-         * Display board html inside container div
-         * @param container Div to contain board html
-         */
-        display(container) {
-
-            // Request board preview html via AJAX
-            $.get("modules/board.php", {boardId: this.id}).done(function(response) {
-                container.html(response);
-            });
-
-        }
-
-    }
-
     /* FOLDER INFO & DISPLAY */
 
     class Folder {
@@ -644,16 +531,16 @@ $username = htmlentities($row['name']);
          * Returns a handle to the corresponding preview div or null if none exists.
          */
         getPreviewDiv() {
-            
+
             var div = $("#folderPreview" + this.token);
             var response = null;
-            
+
             if (div.length > 0) {
                 response = div;
             }
-            
+
             return response;
-            
+
         }
 
         updateGrid() {
